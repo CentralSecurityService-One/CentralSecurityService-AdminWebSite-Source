@@ -1,0 +1,51 @@
+﻿@page
+@model CentralSecurityServiceAdmin.Pages.SignInModel
+@{
+    ViewData["Title"] = "Sign In";
+}
+
+<script src="https://www.google.com/recaptcha/api.js?render=@Model.GoogleReCaptchaSiteKey"></script>
+
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('@Model.GoogleReCaptchaSiteKey', { action: 'homepage' }).then(function (token) {
+            document.getElementById("GoogleReCaptchaValueId").value = token;
+        });
+    });
+</script>
+
+<h1>Sign In</h1>
+
+<form method="POST">
+    <div>
+        You Are Signed In: @if (Model.UserSession.IsSignedIn)
+        {
+            <text>Yes</text>
+        }
+                else
+        {
+            <text>No</text>
+        }
+    </div>
+    <br />
+    <div>User Display Name: @Model.UserSession.DisplayName</div>
+    <br />
+    <div>User Roles Ids: @Model.UserSession.GetRoleIdsAsString()</div>
+    <div>User Roles Names: @Model.UserSession.GetRoleNamesAsString()</div>
+    <br />
+    <div>Google ReCaptcha Score: <span>@Model.GoogleReCaptchaScore</span></div>
+    <br />
+    <div>Message: <span>@Model.Message</span></div>
+    <br />
+    <p><strong>NOTE:</strong> For the purposes of this Alpha Software, any text may be used for the E-Mail Address Field.</p>
+
+    <div>E-Mail Address: <input type="text" asp-for="EMailAddress" /></div>
+    <div>Password: <input type="password" asp-for="Password" /></div>
+    <br />
+    <input type="submit" name="Action" value="Sign In" />
+    <input type="submit" name="Action" value="Cancel" />
+
+    <input type="hidden" id="GoogleReCaptchaValueId" asp-for="GoogleReCaptchaValue" />
+</form>
+<br />
+<br />
