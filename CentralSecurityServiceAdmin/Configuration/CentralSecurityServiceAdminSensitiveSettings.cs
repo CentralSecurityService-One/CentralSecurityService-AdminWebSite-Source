@@ -15,6 +15,8 @@
         {
             public string AdminEMailAddress { get; set; }
 
+            public string AdminUserGuid { get; set; }
+
             public string AdminPassword { get; set; }
 
             public string AdminMobilePhoneNumber { get; set; }

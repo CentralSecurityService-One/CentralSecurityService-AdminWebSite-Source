@@ -72,7 +72,20 @@ namespace CentralSecurityServiceAdmin.Pages.Special
 
                         if (userExists)
                         {
-                            // TODO: Handle the case where the admin account already exists.
+                            UserEntity userEntity = EadentUserIdentity.AdminForceUserPasswordChange(
+                                CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress,
+                                Guid.Parse(CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminUserGuid),
+                                CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminPassword,
+                                HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore);
+
+                            if (userEntity != null)
+                            {
+                                actionResult = Redirect("/SignIn");
+                            }
+                            else
+                            {
+                                Message = "Failed to create the Global Administrator account. Please try again later.";
+                            }
                         }
                         else
                         {
