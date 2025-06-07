@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36202.13 d17.14
+VisualStudioVersion = 17.14.36202.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CentralSecurityServiceAdmin", "CentralSecurityServiceAdmin\CentralSecurityServiceAdmin.csproj", "{1CBAC63C-5ED4-4EE7-BCA9-3FC770B66325}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eadent.Common", "Eadent.Common\Eadent.Common.csproj", "{F6F8260D-0A44-965E-9C3F-DC14948B5D93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eadent.Identity", "Eadent.Identity\Eadent.Identity.csproj", "{FA633505-F44C-51CE-0F91-95F5C50F2DB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{1CBAC63C-5ED4-4EE7-BCA9-3FC770B66325}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CBAC63C-5ED4-4EE7-BCA9-3FC770B66325}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CBAC63C-5ED4-4EE7-BCA9-3FC770B66325}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6F8260D-0A44-965E-9C3F-DC14948B5D93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6F8260D-0A44-965E-9C3F-DC14948B5D93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6F8260D-0A44-965E-9C3F-DC14948B5D93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6F8260D-0A44-965E-9C3F-DC14948B5D93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA633505-F44C-51CE-0F91-95F5C50F2DB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA633505-F44C-51CE-0F91-95F5C50F2DB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA633505-F44C-51CE-0F91-95F5C50F2DB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA633505-F44C-51CE-0F91-95F5C50F2DB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
