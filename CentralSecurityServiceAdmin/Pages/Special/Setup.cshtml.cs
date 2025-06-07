@@ -92,7 +92,7 @@ namespace CentralSecurityServiceAdmin.Pages.Special
 
                             if (registerUserStatusId == RegisterUserStatus.Success)
                             {
-                                actionResult = Redirect("SignIn");
+                                actionResult = Redirect("/SignIn");
                             }
                             else
                             {
