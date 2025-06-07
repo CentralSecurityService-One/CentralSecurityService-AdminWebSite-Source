@@ -3,49 +3,88 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CentralSecurityServiceAdmin</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CentralSecurityServiceAdmin.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] - Central Security Service</title>
+
+    @RenderSection("MetaTags", required: false)
+        
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="stylesheet" href="Branding/V1.0.0.0/CentralSecurityService.css" asp-append-version="true" />
 </head>
+@{
+    bool isDebug = false;
+
+#if DEBUG
+    isDebug = true;
+#endif
+}
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">CentralSecurityServiceAdmin</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+    <header id="headerCentralSecurityService">
+        <div id="divLogo">
+            <a target="_blank" href="Branding/V1.0.0.0/papilio_ulysses_butterfly_vector-www.CraftsManSpace.com-2025_06_05.png"><img id="imgLogo" src="Branding/V1.0.0.0/papilio_ulysses_butterfly_vector-www.CraftsManSpace.com-2025_06_05.png" alt="Central Security Service Logo" title="Central Security Service Logo" /></a>
+        </div>
+
+        <div id="divTitleAndTagLine">
+            <div id="divTitle">
+                <a href="/"><img src="Branding/V1.0.0.0/2022_04_03-03-www.CoolText.com-Celtic-Hand-St.-Patrick-Font-OJ-53-cooltext407953963820943.png" alt="Central Security Service Title Image" title="Central Security Service Title Image" /></a>
             </div>
+            <div id="divTagLine">
+                &nbsp;
+                <i id="iTagLine">The Only One</i>
+            </div>
+        </div>
+
+        <nav>
+            <br />
+            <hr />
+            &nbsp;
+            <a href="/Index">Home</a>
+            &nbsp;
+            <a href="/References">References</a>
+            &nbsp;
+            <a href="/Personnel">Personnel</a>
+            &nbsp;
+            <a href="/About">About</a>
+            &nbsp;
+            @if (isDebug)
+            {
+                <text>
+                    <a href="/Tests">Tests</a>
+                    &nbsp;
+                    <a href="/Development">Development</a>
+                    &nbsp;
+                </text>
+            }
+            <hr />
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - CentralSecurityServiceAdmin - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    <main id="mainCentralSecurityService">
+        <br />
+
+        <div id="divDateAndTime">
+            <script type="text/javascript">
+                var browserNow = new Date();
+                document.write("[Browser] " + browserNow.toDateString() + " - " + browserNow.toTimeString());
+            </script>
         </div>
-    </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+        @RenderBody()
+    </main>
+
+    <footer id="footerCentralSecurityService">
+        <hr />
+
+        &nbsp;
+
+        Copyright &copy; 2022<script type="text/javascript" language="javascript">
+            if (browserNow.getFullYear() > 2022)
+                document.write("-" + browserNow.getFullYear());
+        </script>
+        Central Security Service. All Rights Reserved.
+    </footer>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
