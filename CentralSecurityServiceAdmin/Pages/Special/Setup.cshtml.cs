@@ -69,6 +69,36 @@ namespace CentralSecurityServiceAdmin.Pages.Special
                     else
                     {
                         bool userExists = EadentUserIdentity.AdminDoesUserExist(CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress);
+
+                        if (userExists)
+                        {
+                            // TODO: Handle the case where the admin account already exists.
+                        }
+                        else
+                        {
+                            int createdByApplicationId = 0;
+                            string userGuidString = null;
+                            string eMailAddress = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress;
+                            string password = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminPassword;
+                            string mobilePhoneNumber = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminMobilePhoneNumber;
+
+                            if (string.IsNullOrWhiteSpace(mobilePhoneNumber))
+                            {
+                                mobilePhoneNumber = null;
+                            }
+
+                            (RegisterUserStatus registerUserStatusId, UserEntity userEntity) = EadentUserIdentity.RegisterUser(createdByApplicationId, userGuidString, Role.GlobalAdministrator,
+                                eMailAddress, eMailAddress, mobilePhoneNumber, password, HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore);
+
+                            if (registerUserStatusId == RegisterUserStatus.Success)
+                            {
+                                actionResult = Redirect("SignIn");
+                            }
+                            else
+                            {
+                                Message = $"RegisterUserStatusId = {registerUserStatusId}";
+                            }
+                        }
                     }
                 }
             }
