@@ -1,7 +1,10 @@
 using CentralSecurityService.Common.Configuration;
+using CentralSecurityService.Common.DataAccess.CentralSecurityService.Databases;
+using CentralSecurityService.Common.DataAccess.CentralSecurityService.Repositories;
 using CentralSecurityServiceAdmin.Configuration;
 using CentralSecurityServiceAdmin.Sessions;
 using Eadent.Identity.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
@@ -56,6 +59,14 @@ namespace CentralSecurityServiceAdmin
             var commonSettings = CentralSecurityServiceCommonSettings.Instance;
             var sensitiveSettings = CentralSecurityServiceAdminSensitiveSettings.Instance;
             var eadentIdentitySettings = EadentIdentitySettings.Instance;
+
+            var connectionString = CentralSecurityServiceCommonSettings.Instance.Database.ConnectionString;
+
+            services.AddDbContext<CentralSecurityServiceDatabase>(options => options.UseSqlServer(connectionString));
+
+            services.AddScoped<ICentralSecurityServiceDatabase, CentralSecurityServiceDatabase>();
+
+            services.AddTransient<IReferencesRepository, ReferencesRepository>();
 
             var app = builder.Build();
 
