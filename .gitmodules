@@ -4,3 +4,6 @@
 [submodule "Eadent.Identity"]
 	path = Eadent.Identity
 	url = git@github.com:Eadent/Eadent-Identity-Module-Source.git
+[submodule "CentralSecurityService.Common"]
+	path = CentralSecurityService.Common
+	url = git@github.com:CentralSecurityService-One/CentralSecurityService-Common-Module-Source.git

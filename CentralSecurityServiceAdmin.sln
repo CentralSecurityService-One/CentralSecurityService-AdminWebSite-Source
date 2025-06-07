@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eadent.Common", "Eadent.Com
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eadent.Identity", "Eadent.Identity\Eadent.Identity.csproj", "{FA633505-F44C-51CE-0F91-95F5C50F2DB4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CentralSecurityService.Common", "CentralSecurityService.Common\CentralSecurityService.Common.csproj", "{F60A5704-65DA-56B8-FB2F-840214CCFE93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{FA633505-F44C-51CE-0F91-95F5C50F2DB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA633505-F44C-51CE-0F91-95F5C50F2DB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA633505-F44C-51CE-0F91-95F5C50F2DB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F60A5704-65DA-56B8-FB2F-840214CCFE93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F60A5704-65DA-56B8-FB2F-840214CCFE93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F60A5704-65DA-56B8-FB2F-840214CCFE93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F60A5704-65DA-56B8-FB2F-840214CCFE93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
