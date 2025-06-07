@@ -42,14 +42,19 @@ namespace CentralSecurityServiceAdmin
 
             builder.Configuration.GetSection(CentralSecurityServiceAdminSettings.SectionName).Get<CentralSecurityServiceAdminSettings>();
 
-            builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.Folder, "CentralSecurityServiceAdmin.settings.json"), optional: false, reloadOnChange: false);
+            builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.Folder, "CentralSecurityServiceCommon.settings.json"), optional: false, reloadOnChange: false);
+            builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.Folder, "CentralSecurityServiceAdminSensitive.settings.json"), optional: false, reloadOnChange: false);
             builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.Folder, "Eadent.Identity.settings.json"), optional: false, reloadOnChange: false);
 
             builder.Configuration.GetSection(CentralSecurityServiceCommonSettings.SectionName).Get<CentralSecurityServiceCommonSettings>();
+            builder.Configuration.GetSection(CentralSecurityServiceAdminSensitiveSettings.SectionName).Get<CentralSecurityServiceAdminSensitiveSettings>();
             builder.Configuration.GetSection(EadentIdentitySettings.SectionName).Get<EadentIdentitySettings>();
 
             Eadent.Identity.Startup.ConfigureServices(services);
 
+            // TODO: Remove the following lines.
+            var commonSettings = CentralSecurityServiceCommonSettings.Instance;
+            var sensitiveSettings = CentralSecurityServiceAdminSensitiveSettings.Instance;
             var eadentIdentitySettings = EadentIdentitySettings.Instance;
 
             var app = builder.Build();

@@ -1,4 +1,5 @@
 using CentralSecurityService.Common.Configuration;
+using CentralSecurityServiceAdmin.Configuration;
 using CentralSecurityServiceAdmin.Sessions;
 using Eadent.Common.WebApi.ApiClient;
 using Eadent.Common.WebApi.DataTransferObjects.Google;
@@ -8,25 +9,20 @@ using Eadent.Identity.DataAccess.EadentUserIdentity.Entities;
 using Eadent.Identity.Definitions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Serilog.Context;
+using System.Net.Mail;
 
-namespace CentralSecurityServiceAdmin.Pages
+namespace CentralSecurityServiceAdmin.Pages.Special
 {
-    public class SignInModel : PageModel
+    public class SetupModel : PageModel
     {
-        private ILogger<SignInModel> Logger { get; }
+        private ILogger<SetupModel> Logger { get; }
 
         protected IEadentUserIdentity EadentUserIdentity { get; }
-
-        public IUserSession UserSession { get; }
 
         public string Message { get; set; }
 
         [BindProperty]
-        public string EMailAddress { get; set; }
-
-        [BindProperty]
-        public string Password { get; set; }
+        public string ConfirmCurrentDate { get; set; }
 
         public string GoogleReCaptchaSiteKey => CentralSecurityServiceCommonSettings.Instance.GoogleReCaptcha.SiteKey;
 
@@ -35,19 +31,14 @@ namespace CentralSecurityServiceAdmin.Pages
         [BindProperty]
         public string GoogleReCaptchaValue { get; set; }
 
-        public SignInModel(ILogger<SignInModel> logger, IEadentUserIdentity eadentUserIdentity, IUserSession userSession)
+        public SetupModel(ILogger<SetupModel> logger, IEadentUserIdentity eadentUserIdentity)
         {
             Logger = logger;
             EadentUserIdentity = eadentUserIdentity;
-            UserSession = userSession;
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsayc()
         {
-            LogContext.PushProperty("SessionGuid", Guid.NewGuid().ToString());
-
-            Logger.LogInformation("SignIn page accessed at {DateTimeUtc}", DateTime.UtcNow);
-
             return Page();
         }
 
@@ -61,30 +52,23 @@ namespace CentralSecurityServiceAdmin.Pages
 
             if (googleReCaptchaScore < CentralSecurityServiceCommonSettings.Instance.GoogleReCaptcha.MinimumScore)
             {
-                Message = "You are unable to Sign In because of a poor Google ReCaptcha Score.";
+                Message = "You are unable to perform this action because of a poor Google ReCaptcha Score.";
             }
             else
             {
-                if (action == "Cancel")
+                if (action == "Confirm")
                 {
-                    Message = "You chose to Cancel.";
-
-                    EMailAddress = string.Empty;
-                    Password = null;
-                }
-                else if (action == "Sign In")
-                {
-                    (SignInStatus signInStatusId, UserSessionEntity userSessionEntity, DateTime? previousUserSignInDateTimeUtc) = EadentUserIdentity.SignInUser(SignInType.WebSite, EMailAddress, Password, HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore);
-
-                    if (signInStatusId == SignInStatus.Success)
+                    if (string.IsNullOrWhiteSpace(ConfirmCurrentDate) || !DateTime.TryParse(ConfirmCurrentDate, out DateTime currentDateTime))
                     {
-                        UserSession.SignIn(userSessionEntity);
-
-                        actionResult = Redirect("CheckAndUpdateUserSession");
+                        Message = "You must enter a valid Date in the Date field.";
+                    }
+                    else if ($"{DateTime.UtcNow.Date:yyyy/MM/dd}" != ConfirmCurrentDate)
+                    {
+                        Message = "The Date you entered does not match the current date. Please try again.";
                     }
                     else
                     {
-                        Message = $"SignInStatusId = {signInStatusId} : PreviousUserSignInDateTimeUtc = {previousUserSignInDateTimeUtc}";
+                        bool userExists = EadentUserIdentity.AdminDoesUserExist(CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress);
                     }
                 }
             }

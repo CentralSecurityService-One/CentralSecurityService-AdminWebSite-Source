@@ -1,0 +1,30 @@
+﻿@page
+@model CentralSecurityServiceAdmin.Pages.Special.SetupModel
+@{
+    ViewData["Title"] = "Setup";
+}
+
+<script src="https://www.google.com/recaptcha/api.js?render=@Model.GoogleReCaptchaSiteKey"></script>
+
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('@Model.GoogleReCaptchaSiteKey', { action: 'homepage' }).then(function (token) {
+            document.getElementById("GoogleReCaptchaValueId").value = token;
+        });
+    });
+</script>
+
+<h1>Setup</h1>
+
+<form method="POST">
+    <div>Message: <span>@Model.Message</span></div>
+    <br />
+
+    <div>Current YYYY/MM/DD: <input type="text" asp-for="ConfirmCurrentDate" /></div>
+    <br />
+    <input type="submit" name="Action" value="Confirm" />
+
+    <input type="hidden" id="GoogleReCaptchaValueId" asp-for="GoogleReCaptchaValue" />
+</form>
+<br />
+<br />
