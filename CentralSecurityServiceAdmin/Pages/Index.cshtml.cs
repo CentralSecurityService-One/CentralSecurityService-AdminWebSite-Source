@@ -14,7 +14,7 @@ namespace CentralSecurityServiceAdmin.Pages
 
         public void OnGet()
         {
-
+            _logger.LogInformation("Index page accessed at {DateTimeUtc}", DateTime.UtcNow);
         }
     }
 }
