@@ -1,0 +1,17 @@
+﻿@page
+@model CentralSecurityServiceAdmin.Pages.AddDataModel
+@{
+    ViewData["Title"] = "Add Data";
+}
+
+@section MetaTags {
+    <meta name="keywords" content="Central Security Service, CIA, NSA, MI6, SIS, MI5, GCHQ, Medical, Freemasons, In Memory, Duffy Group, Heritage, Legacy, Societal Development">
+}
+
+<h1>Add Data</h1>
+
+<form method="POST">
+    <div>Message: <span>@Model.Message</span></div>
+    <br />
+    <input type="submit" name="Action" value="Add Data" />
+</form>

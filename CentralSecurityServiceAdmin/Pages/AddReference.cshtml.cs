@@ -4,6 +4,7 @@ using CentralSecurityService.Common.DataAccess.CentralSecurityService.Entities;
 using CentralSecurityService.Common.DataAccess.CentralSecurityService.Repositories;
 using CentralSecurityService.Common.Definitions;
 using CentralSecurityServiceAdmin.Configuration;
+using CentralSecurityServiceAdmin.Helpers;
 using CentralSecurityServiceAdmin.PagesAdditional;
 using CentralSecurityServiceAdmin.Sessions;
 using Eadent.Identity.Access;
@@ -71,81 +72,52 @@ namespace CentralSecurityServiceAdmin.Pages
 
         public async Task OnPostAsync(string action)
         {
-            (bool success, decimal googleReCaptchaScore) = await GoogleReCaptchaAsync();
-
-            GoogleReCaptchaScore = googleReCaptchaScore;
-
-            if (googleReCaptchaScore < CentralSecurityServiceCommonSettings.Instance.GoogleReCaptcha.MinimumScore)
+            if (UserSession.IsSignedIn)
             {
-                Logger.LogWarning("You are unable to Add A Reference because of a poor Google ReCaptcha Score {GoogleReCaptchaScore}.", googleReCaptchaScore);
-            }
-            else if (action == "Add Reference")
-            {
-                try
+                (bool success, decimal googleReCaptchaScore) = await GoogleReCaptchaAsync();
+
+                GoogleReCaptchaScore = googleReCaptchaScore;
+
+                if (googleReCaptchaScore < CentralSecurityServiceCommonSettings.Instance.GoogleReCaptcha.MinimumScore)
                 {
-                    if (ReferenceTypeId == ReferenceType.Image)
+                    Logger.LogWarning("You are unable to Add A Reference because of a poor Google ReCaptcha Score {GoogleReCaptchaScore}.", googleReCaptchaScore);
+                }
+                else if (action == "Add Reference")
+                {
+                    try
                     {
-                        await AddImageReferenceAsync();
+                        if (ReferenceTypeId == ReferenceType.Image)
+                        {
+                            await AddImageReferenceAsync();
 
-                        Message = "Image Reference added successfully.";
+                            Message = "Image Reference added successfully.";
+                        }
+                        else if (ReferenceTypeId == ReferenceType.VideoUrl)
+                        {
+                            await AddVideoUrlReferenceAsync();
+
+                            Message = "Video Url Reference added successfully.";
+                        }
+                        else if (ReferenceTypeId == ReferenceType.Url)
+                        {
+                            await AddUrlReferenceAsync();
+
+                            Message = "Url Reference added successfully.";
+                        }
+                        else
+                        {
+                            Logger.LogWarning("Unsupported Reference Type: {ReferenceTypeId}.", ReferenceTypeId);
+
+                            Message = "Unsupported Reference Type. Please try again.";
+                        }
                     }
-                    else if (ReferenceTypeId == ReferenceType.VideoUrl)
+                    catch (Exception exception)
                     {
-                        await AddVideoUrlReferenceAsync();
+                        Logger.LogError(exception, "An Exception occurred.");
 
-                        Message = "Video Url Reference added successfully.";
-                    }
-                    else if (ReferenceTypeId == ReferenceType.Url)
-                    {
-                        await AddUrlReferenceAsync();
-
-                        Message = "Url Reference added successfully.";
-                    }
-                    else
-                    {
-                        Logger.LogWarning("Unsupported Reference Type: {ReferenceTypeId}.", ReferenceTypeId);
-
-                        Message = "Unsupported Reference Type. Please try again.";
+                        Message = "An error occurred while adding the Reference. Please try again later.";
                     }
                 }
-                catch (Exception exception)
-                {
-                    Logger.LogError(exception, "An Exception occurred.");
-
-                    Message = "An error occurred while adding the Reference. Please try again later.";
-                }
-            }
-        }
-
-        // Courtesy of www.ChatGpt.com (Modified).
-        private static void SaveThumbnailAsJpeg(string imageFilePathAndName, string thumbnailFilePathAndName, int targetWidth)
-        {
-            // Load the image.
-            using var inputStream = System.IO.File.OpenRead(imageFilePathAndName);
-
-            using var original = SKBitmap.Decode(inputStream);
-
-            if (original.Width <= targetWidth)
-            {
-                // If the original image is smaller than the target width, just copy it as is.
-                System.IO.File.Copy(imageFilePathAndName, thumbnailFilePathAndName, true);
-            }
-            else
-            {
-                int targetHeight = original.Height * targetWidth / original.Width;
-
-                // Resize/Get Thumbnail.
-                using var thumbnail = original.Resize(new SKImageInfo(targetWidth, targetHeight), new SKSamplingOptions(new SKCubicResampler()));
-
-                if (thumbnail == null)
-                    throw new Exception("Failed to resize image / Get Thumbnail.");
-
-                using var image = SKImage.FromBitmap(thumbnail);
-
-                using var outputStream = System.IO.File.OpenWrite(thumbnailFilePathAndName);
-
-                // Encode to JPEG (or use .Encode(SKEncodedImageFormat.Png, 100) for PNG).
-                image.Encode(SKEncodedImageFormat.Jpeg, 90).SaveTo(outputStream);
             }
         }
 
@@ -204,7 +176,7 @@ namespace CentralSecurityServiceAdmin.Pages
                 thumbnailFileName = $"{uniqueReferenceId:R000_000_000}_000-Thumbnail_Width_125-{Path.GetFileNameWithoutExtension(imageFileName)}.jpg";
                 thumbnailFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, thumbnailFileName);
 
-                SaveThumbnailAsJpeg(imageFilePathAndName, thumbnailFilePathAndName, 125);
+                ImageHelper.SaveThumbnailAsJpeg(imageFilePathAndName, thumbnailFilePathAndName, 125);
             }
             else
             {
