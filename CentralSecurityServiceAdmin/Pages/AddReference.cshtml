@@ -26,6 +26,7 @@
         Reference Type:
         <input asp-for="ReferenceTypeId" type="radio" id="ReferenceTypeImageId" value="@ReferenceType.Image" checked /> <label for="ReferenceTypeImageId">Image</label>
         <input asp-for="ReferenceTypeId" type="radio" id="ReferenceTypeVideoUrlId" value="@ReferenceType.VideoUrl" /> <label for="ReferenceTypeVideoUrlId">Video Url</label>
+        <input asp-for="ReferenceTypeId" type="radio" id="ReferenceTypeUrlId" value="@ReferenceType.Url" /> <label for="ReferenceTypeUrlId">Url</label>
     </div>
     <br />
     <div id="divImageReference">
@@ -34,6 +35,10 @@
     </div>
     <div id="divVideoUrl" hidden>
         Video Url: <input type="text" id="videoUrlId" asp-for="VideoUrl" />
+        <br />
+    </div>
+    <div id="divUrl" hidden>
+        Url: <input type="text" id="urlId" asp-for="Url" />
         <br />
     </div>
     <br />
@@ -55,15 +60,21 @@
 {
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <!-- The following section of code relating to Toggling elements is courtesty of GitHub Copilot. -->
+    <!-- The following section of code relating to Toggling elements is courtesty of GitHub Copilot (Modified). -->
     <script>
         function toggleReferenceFields() {
             if ($("#ReferenceTypeImageId").is(":checked")) {
                 $("#divImageReference").show();
                 $("#divVideoUrl").hide();
+                $("#divUrl").hide();
             } else if ($("#ReferenceTypeVideoUrlId").is(":checked")) {
                 $("#divImageReference").hide();
                 $("#divVideoUrl").show();
+                $("#divUrl").hide();
+            } else if ($("#ReferenceTypeUrlId").is(":checked")) {
+                $("#divImageReference").hide();
+                $("#divVideoUrl").hide();
+                $("#divUrl").show();
             }
         }
 

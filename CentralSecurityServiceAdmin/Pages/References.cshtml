@@ -45,9 +45,19 @@
     @formatted</td>
                 <td>@reference.ReferenceTypeId</td>
                 <td>
-                    @if (reference.ReferenceTypeId == ReferenceType.Image)
+                    @if ((reference.ReferenceTypeId == ReferenceType.VideoUrl) || (reference.ReferenceTypeId == ReferenceType.Url))
                     {
-                        <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail" /></a>
+                        if (reference.ThumbnailFileName != null)
+                        {
+                            <a target="_blank" href="@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail"/></a>
+                        }
+                    }
+                    else if (reference.ReferenceTypeId == ReferenceType.Image)
+                    {
+                        if (reference.ThumbnailFileName != null)
+                        {
+                            <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail" /></a>
+                        }
                     }
                 </td>
                 <td>
@@ -73,44 +83,5 @@
         }
     </tbody>
 </table>
-
-@*
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_000_000-Elizabeth_Lydia_Manningham_Buller-www.Wikipedia.org-2022_08_14.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_000_001-Width_125-Elizabeth_Lydia_Manningham_Buller-www.Wikipedia.org-2022_08_14.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_000_000-Elizabeth_Lydia_Manningham_Buller-www.Wikipedia.org-2022_08_14.jpg">R000_000_000: Elizabeth Lydia Manningham-Buller</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_001_000-Maria_Duffy-Bad_CIA-MI5-Bad_Medical-And-Bad_Freemason-Edited_From_Original_Image_Using_IrfanView_64_bit-20140216_201258_1x1.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_001_001-Width_125-Maria_Duffy-Bad_CIA-MI5-Bad_Medical-And-Bad_Freemason-Edited_From_Original_Image_Using_IrfanView_64_bit-20140216_201258_1x1.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_001_000-Maria_Duffy-Bad_CIA-MI5-Bad_Medical-And-Bad_Freemason-Edited_From_Original_Image_Using_IrfanView_64_bit-20140216_201258_1x1.jpg">R000_000_001: Maria Duffy</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_002_000-Galina_Carroll-Bad_CIA-MI6-And-Bad_Freemason.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_002_001-Width_125-Galina_Carroll-Bad_CIA-MI6-And-Bad_Freemason.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_002_000-Galina_Carroll-Bad_CIA-MI6-And-Bad_Freemason.jpg">R000_000_002: Galina Carroll</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_003_000_Mary_Siney_Duffy-Bad_CIA-Bad_Medical-And-Bad_Freemason-www.Facebook.com-2025_06_01-46482842_10157032199681454_8007284602844479488_n.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_003_001_Width_125-Mary_Siney_Duffy-Bad_CIA-Bad_Medical-And-Bad_Freemason-www.Facebook.com-2025_06_01-46482842_10157032199681454_8007284602844479488_n.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_003_000_Mary_Siney_Duffy-Bad_CIA-Bad_Medical-And-Bad_Freemason-www.Facebook.com-2025_06_01-46482842_10157032199681454_8007284602844479488_n.jpg">R000_000_003: Mary Siney Duffy</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_004_000-Dr._Yolande_Ferguson-Bad_CIA-MI5-Bad_Medical-And-Bad_Freemason-www.Facebook.com-12274309_10153100560791036_6947388060168958277_n.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_004_001-Width_125-Dr._Yolande_Ferguson-Bad_CIA-MI5-Bad_Medical-And-Bad_Freemason-www.Facebook.com-12274309_10153100560791036_6947388060168958277_n.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_004_000-Dr._Yolande_Ferguson-Bad_CIA-MI5-Bad_Medical-And-Bad_Freemason-www.Facebook.com-12274309_10153100560791036_6947388060168958277_n.jpg">R000_000_004: Dr. Yolande Ferguson</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_005_000-Sinead_Frain-Bad_CIA-MI5-Bad_Medical-And-Bad_Freemason-www.LinkedIn.com-1551534145048.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_005_001-Width_125-Sinead_Frain-Bad_CIA-MI5-Bad_Medical-And-Bad_Freemason-www.LinkedIn.com-1551534145048.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_005_000-Sinead_Frain-Bad_CIA-MI5-Bad_Medical-And-Bad_Freemason-www.LinkedIn.com-1551534145048.jpg">R000_000_005: Sinead Frain</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_006_000-Manu_Gambhir-Bad_Freemason-At_Least-r225x225-www.PocketGamer.biz-2022_11_25.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_006_001-Width_125-Manu_Gambhir-Bad_Freemason-At_Least-r225x225-www.PocketGamer.biz-2022_11_25.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_006_000-Manu_Gambhir-Bad_Freemason-At_Least-r225x225-www.PocketGamer.biz-2022_11_25.jpg">R000_000_006: Manu Gambhir</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_007_000-Dr._Galal_Badrawy-Bad_CIA-BSS-Bad_Medical-Bad_Freemason-www.Facebook.com-2022_11_28-18222387_364846557250351_8970463873198105780_n.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_007_001-Width_125-Dr._Galal_Badrawy-Bad_CIA-BSS-Bad_Medical-Bad_Freemason-www.Facebook.com-2022_11_28-18222387_364846557250351_8970463873198105780_n.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_007_000-Dr._Galal_Badrawy-Bad_CIA-BSS-Bad_Medical-Bad_Freemason-www.Facebook.com-2022_11_28-18222387_364846557250351_8970463873198105780_n.jpg">R000_000_007: Dr. Galal Badrawy</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_008_000-Dr._Raju_Bangaru-Bad_Medical-At_Least-HealthService.hse.ie-May_2022_latest_cho_dncc_magazine-2022_11_30.png"><img src="/GetReferenceFile?referenceFile=R000_000_008_001-Width_125-Dr._Raju_Bangaru-Bad_Medical-At_Least-HealthService.hse.ie-May_2022_latest_cho_dncc_magazine-2022_11_30.png" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_008_000-Dr._Raju_Bangaru-Bad_Medical-At_Least-HealthService.hse.ie-May_2022_latest_cho_dncc_magazine-2022_11_30.png">R000_000_008: Dr. Raju Bangaru</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_009_000-Andrew_Caras_Altas-Bad_Freemason-At_Least-www.Facebook.com-2022_12_01-420280_10151766083634768_314611671_n.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_009_001-Width_125-Andrew_Caras_Altas-Bad_Freemason-At_Least-www.Facebook.com-2022_12_01-420280_10151766083634768_314611671_n.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_009_000-Andrew_Caras_Altas-Bad_Freemason-At_Least-www.Facebook.com-2022_12_01-420280_10151766083634768_314611671_n.jpg">R000_000_009: Andrew Caras-Altas</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_010_000-Jasmine_Fletcher-MI6-At_Least-1-7766-0-0.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_010_001-Width_125-Jasmine_Fletcher-MI6-At_Least-1-7766-0-0.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_010_000-Jasmine_Fletcher-MI6-At_Least-1-7766-0-0.jpg">R000_000_010: Jasmine Fletcher</a>.
-<br />
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_011_000-Stephen_Hadfield-BSS-At_Least-1_0_1_1-0.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_011_001-Width_125-Stephen_Hadfield-BSS-At_Least-1_0_1_1-0.jpg" /></a>
-<a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_011_000-Stephen_Hadfield-BSS-At_Least-1_0_1_1-0.jpg">R000_000_011: Stephen Hadfield</a>.
-<br />
-*@
 
 <br />

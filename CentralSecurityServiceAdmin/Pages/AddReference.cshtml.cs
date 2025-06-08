@@ -42,6 +42,9 @@ namespace CentralSecurityServiceAdmin.Pages
         [BindProperty]
         public string VideoUrl { get; set; }
 
+        [BindProperty]
+        public string Url { get; set; }
+
         public AddReferenceModel(ILogger<AddReferenceModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity, ICentralSecurityServiceDatabase centralSecurityServiceDatabase, IReferencesRepository referencesRepository)
             : base(logger, configuration, userSession, eadentUserIdentity)
         {
@@ -86,6 +89,10 @@ namespace CentralSecurityServiceAdmin.Pages
                     {
                         await AddVideoUrlReferenceAsync();
                     }
+                    else if (ReferenceTypeId == ReferenceType.Url)
+                    {
+                        await AddUrlReferenceAsync();
+                    }
                     else
                     {
                         Logger.LogWarning("Unsupported Reference Type: {ReferenceTypeId}.", ReferenceTypeId);
@@ -106,7 +113,7 @@ namespace CentralSecurityServiceAdmin.Pages
 
             using var original = SKBitmap.Decode(inputStream);
 
-            if (original.Width < targetWidth)
+            if (original.Width <= targetWidth)
             {
                 // If the original image is smaller than the target width, just copy it as is.
                 System.IO.File.Copy(imageFilePathAndName, thumbnailFilePathAndName, true);
@@ -202,6 +209,7 @@ namespace CentralSecurityServiceAdmin.Pages
             AddReference(uniqueReferenceId, ReferenceType.Image, imageFileName, thumbnailFileName, Description, Categorisations);
         }
 
+        // TODO: Look to reduce Duplicate Code with AddUrlReferenceAsync.
         private async Task AddVideoUrlReferenceAsync()
         {
             string referenceName = null;
@@ -240,6 +248,47 @@ namespace CentralSecurityServiceAdmin.Pages
             }
 
             AddReference(uniqueReferenceId, ReferenceType.VideoUrl, referenceName, thumbnailFileName, Description, Categorisations);
+        }
+
+        // TODO: Look to reduce Duplicate Code with AddVideoUrlReferenceAsync.
+        private async Task AddUrlReferenceAsync()
+        {
+            string referenceName = null;
+
+            string thumbnailFileName = null;
+
+            string thumbnailFilePathAndName = null;
+
+            if (string.IsNullOrWhiteSpace(Url))
+            {
+                Logger.LogWarning("No Url was specified.");
+                return;
+            }
+            else
+            {
+                referenceName = Url.Trim();
+            }
+
+            long uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
+
+            if (ThumbnailFileToUpload == null || ThumbnailFileToUpload.Length == 0)
+            {
+                thumbnailFileName = null;
+                thumbnailFilePathAndName = null;
+            }
+            else
+            {
+                // TODO: Look to reduce Duplicate Code with AddImageReferenceAsync.
+                thumbnailFileName = $"{uniqueReferenceId:R000_000_000}_000-Thumbnail_Width_125-{Path.GetFileNameWithoutExtension(ThumbnailFileToUpload.FileName)}.jpg";
+                thumbnailFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, thumbnailFileName);
+
+                using (var fileStream = new FileStream(thumbnailFilePathAndName, FileMode.Create))
+                {
+                    await ThumbnailFileToUpload.CopyToAsync(fileStream);
+                }
+            }
+
+            AddReference(uniqueReferenceId, ReferenceType.Url, referenceName, thumbnailFileName, Description, Categorisations);
         }
     }
 }
