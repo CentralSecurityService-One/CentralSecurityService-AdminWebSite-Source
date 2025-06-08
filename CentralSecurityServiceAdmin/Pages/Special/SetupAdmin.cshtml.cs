@@ -2,8 +2,6 @@ using CentralSecurityService.Common.Configuration;
 using CentralSecurityServiceAdmin.Configuration;
 using CentralSecurityServiceAdmin.PagesAdditional;
 using CentralSecurityServiceAdmin.Sessions;
-using Eadent.Common.WebApi.ApiClient;
-using Eadent.Common.WebApi.DataTransferObjects.Google;
 using Eadent.Common.WebApi.Helpers;
 using Eadent.Identity.Access;
 using Eadent.Identity.DataAccess.EadentUserIdentity.Entities;
@@ -12,16 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CentralSecurityServiceAdmin.Pages.Special
 {
-    public class SetupModel : BasePageModel
+    public class SetupAdminModel : BasePageModel
     {
-        private ILogger<SetupModel> Logger { get; }
+        private ILogger<SetupAdminModel> Logger { get; }
 
         public string Message { get; set; }
 
         [BindProperty]
         public string ConfirmCurrentDate { get; set; }
 
-        public SetupModel(ILogger<SetupModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity)
+        public SetupAdminModel(ILogger<SetupAdminModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity)
             : base(logger, configuration, userSession, eadentUserIdentity)
         {
             Logger = logger;

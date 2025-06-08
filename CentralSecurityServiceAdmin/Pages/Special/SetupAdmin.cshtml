@@ -1,7 +1,11 @@
 ﻿@page
-@model CentralSecurityServiceAdmin.Pages.Special.SetupModel
+@model CentralSecurityServiceAdmin.Pages.Special.SetupAdminModel
 @{
-    ViewData["Title"] = "Setup";
+    ViewData["Title"] = "Setup Admin";
+}
+
+@section MetaTags {
+    <meta name="keywords" content="Central Security Service, CIA, NSA, MI6, SIS, MI5, GCHQ, Medical, Freemasons, In Memory, Duffy Group, Heritage, Legacy, Societal Development">
 }
 
 <script src="https://www.google.com/recaptcha/api.js?render=@Model.GoogleReCaptchaSiteKey"></script>
@@ -14,7 +18,7 @@
     });
 </script>
 
-<h1>Setup</h1>
+<h1>Setup Admin</h1>
 
 <form method="POST">
     <div>Message: <span>@Model.Message</span></div>
