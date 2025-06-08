@@ -40,9 +40,12 @@ namespace CentralSecurityServiceAdmin.Pages
 
         public async Task<IActionResult> OnPostAsync(string action)
         {
-            if (action == "Add Data")
+            if (UserSession.IsSignedIn)
             {
-                AddData();
+                if (action == "Add Data")
+                {
+                    AddData();
+                }
             }
 
             return Page();
@@ -133,6 +136,7 @@ namespace CentralSecurityServiceAdmin.Pages
             AddReference(ReferenceType.VideoUrl, "https://youtu.be/u8gaUxAoAXg", thumbnailFileName: null, "2025_06_06_0 - Tesco, Liffey Valley, Dublin, Ireland - (S25+).", "Various.");
 
             AddReference(ReferenceType.Image, "13-Éamonn_Anthony_Duffy-A_1-Gimp-Rotated_90_Degrees_Clockwise-Slice_20_80-20210924_204416-0-1.jpg", "Thumbnail_Width_125-13-Éamonn_Anthony_Duffy-A_1-Gimp-Rotated_90_Degrees_Clockwise-Slice_20_80-20210924_204416-0-1.jpg", "Eamonn/Éamonn Anthony Duffy.", "None - He is a \"1\".");
+            AddReference(ReferenceType.Image, "14-Walter_Maguire-Gimp-Slice_66.6-www.Facebook.com-2025_06_08-468281894_10161023495633207_5359474878369017671_n-1-0.jpg", thumbnailFileName: null, "Walter Maguire.", "\"Bad\" CIA, \"Bad\" Freemason At Least.");
 
             Message = "Test data added successfully.";
         }
