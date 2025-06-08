@@ -32,53 +32,50 @@
             <th>Description</th>
             <th>Categorisations</th>
         </tr>
-    </thead>    
+    </thead>
     <tbody>
         @if (Model.References != null && Model.References.Any())
         {
             foreach (var reference in Model.References)
             {
                 <tr>
-                    <td>@{
-                    var formatted = $"{reference.UniqueReferenceId:R000_000_000}";
-                }
-    @formatted</td>
-                <td>@reference.ReferenceTypeId</td>
-                <td>
-                    @if ((reference.ReferenceTypeId == ReferenceType.VideoUrl) || (reference.ReferenceTypeId == ReferenceType.Url))
-                    {
-                        if (reference.ThumbnailFileName != null)
+                    <td>@{var formatted = $"{reference.UniqueReferenceId:R000_000_000}";}@formatted</td>
+                    <td>@reference.ReferenceTypeId</td>
+                    <td>
+                        @if ((reference.ReferenceTypeId == ReferenceType.VideoUrl) || (reference.ReferenceTypeId == ReferenceType.Url))
                         {
-                            <a target="_blank" href="@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail"/></a>
+                            if (reference.ThumbnailFileName != null)
+                            {
+                                <a target="_blank" href="@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail"/></a>
+                            }
                         }
-                    }
-                    else if (reference.ReferenceTypeId == ReferenceType.Image)
-                    {
-                        if (reference.ThumbnailFileName != null)
+                        else if (reference.ReferenceTypeId == ReferenceType.Image)
                         {
-                            <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail" /></a>
+                            if (reference.ThumbnailFileName != null)
+                            {
+                                <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail" /></a>
+                            }
                         }
-                    }
-                </td>
-                <td>
-                    @if (reference.ReferenceTypeId == ReferenceType.Image)
-                    {
-                        <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName">@reference.ReferenceName</a>
-                    }
-                    else
-                    {
-                        <a target="_blank" href="@reference.ReferenceName">@reference.ReferenceName</a>
-                    }
-                </td>
-                <td>@reference.Description</td>
-                <td>@reference.Categorisations</td>
-            </tr>
+                    </td>
+                    <td>
+                        @if (reference.ReferenceTypeId == ReferenceType.Image)
+                        {
+                            <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName">@reference.ReferenceName</a>
+                        }
+                        else
+                        {
+                            <a target="_blank" href="@reference.ReferenceName">@reference.ReferenceName</a>
+                        }
+                    </td>
+                    <td>@reference.Description</td>
+                    <td>@reference.Categorisations</td>
+                </tr>
+            }
         }
-                }
-                else
+        else
         {
             <tr>
-                <td colspan="5">No references found.</td>
+                <td colspan="6">No References found.</td>
             </tr>
         }
     </tbody>
