@@ -1,4 +1,6 @@
 using CentralSecurityService.Common.Configuration;
+using CentralSecurityService.Common.DataAccess.CentralSecurityService.Repositories;
+using CentralSecurityServiceAdmin.PagesAdditional;
 using CentralSecurityServiceAdmin.Sessions;
 using Eadent.Common.WebApi.ApiClient;
 using Eadent.Common.WebApi.DataTransferObjects.Google;
@@ -7,18 +9,13 @@ using Eadent.Identity.Access;
 using Eadent.Identity.DataAccess.EadentUserIdentity.Entities;
 using Eadent.Identity.Definitions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Serilog.Context;
 
 namespace CentralSecurityServiceAdmin.Pages
 {
-    public class SignInModel : PageModel
+    public class SignInModel : BasePageModel
     {
         private ILogger<SignInModel> Logger { get; }
-
-        protected IEadentUserIdentity EadentUserIdentity { get; }
-
-        public IUserSession UserSession { get; }
 
         public string Message { get; set; }
 
@@ -28,18 +25,10 @@ namespace CentralSecurityServiceAdmin.Pages
         [BindProperty]
         public string Password { get; set; }
 
-        public string GoogleReCaptchaSiteKey => CentralSecurityServiceCommonSettings.Instance.GoogleReCaptcha.SiteKey;
-
-        public decimal GoogleReCaptchaScore { get; set; }
-
-        [BindProperty]
-        public string GoogleReCaptchaValue { get; set; }
-
-        public SignInModel(ILogger<SignInModel> logger, IEadentUserIdentity eadentUserIdentity, IUserSession userSession)
+        public SignInModel(ILogger<SignInModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity, IReferencesRepository referencesRepository)
+            : base(logger, configuration, userSession, eadentUserIdentity)
         {
             Logger = logger;
-            EadentUserIdentity = eadentUserIdentity;
-            UserSession = userSession;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -90,36 +79,6 @@ namespace CentralSecurityServiceAdmin.Pages
             }
 
             return actionResult;
-        }
-
-        protected async Task<(bool success, decimal googleReCaptchaScore)> GoogleReCaptchaAsync()
-        {
-            var verifyRequestDto = new ReCaptchaVerifyRequestDto()
-            {
-                secret = CentralSecurityServiceCommonSettings.Instance.GoogleReCaptcha.Secret,
-                response = GoogleReCaptchaValue,
-                remoteip = HttpHelper.GetLocalIpAddress(Request)
-            };
-
-            bool success = false;
-
-            decimal googleReCaptchaScore = -1M;
-
-            IApiClientResponse<ReCaptchaVerifyResponseDto> response = null;
-
-            using (var apiClient = new ApiClientUrlEncoded(Logger, "https://www.google.com/"))
-            {
-                response = await apiClient.PostAsync<ReCaptchaVerifyRequestDto, ReCaptchaVerifyResponseDto>("/recaptcha/api/siteverify", verifyRequestDto, null);
-            }
-
-            if (response.ResponseDto != null)
-            {
-                googleReCaptchaScore = response.ResponseDto.score;
-
-                success = true;
-            }
-
-            return (success, googleReCaptchaScore);
         }
     }
 }

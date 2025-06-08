@@ -1,20 +1,24 @@
+using CentralSecurityServiceAdmin.PagesAdditional;
+using CentralSecurityServiceAdmin.Sessions;
+using Eadent.Identity.Access;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CentralSecurityServiceAdmin.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel : BasePageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private ILogger<IndexModel> Logger { get; }
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity) : base(logger, configuration, userSession, eadentUserIdentity)
         {
-            _logger = logger;
+            Logger = logger;
         }
 
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-            _logger.LogInformation("Index page accessed at {DateTimeUtc}", DateTime.UtcNow);
+            Logger.LogInformation("Index page accessed at {DateTimeUtc}", DateTime.UtcNow);
+
+            return Page();
         }
     }
 }
