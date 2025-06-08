@@ -24,6 +24,8 @@ namespace CentralSecurityServiceAdmin.Pages
 
         private IReferencesRepository ReferencesRepository { get; set; }
 
+        public string Message { get; set; }
+
         [BindProperty]
         public ReferenceType ReferenceTypeId { get; set; }
 
@@ -84,23 +86,33 @@ namespace CentralSecurityServiceAdmin.Pages
                     if (ReferenceTypeId == ReferenceType.Image)
                     {
                         await AddImageReferenceAsync();
+
+                        Message = "Image Reference added successfully.";
                     }
                     else if (ReferenceTypeId == ReferenceType.VideoUrl)
                     {
                         await AddVideoUrlReferenceAsync();
+
+                        Message = "Video Url Reference added successfully.";
                     }
                     else if (ReferenceTypeId == ReferenceType.Url)
                     {
                         await AddUrlReferenceAsync();
+
+                        Message = "Url Reference added successfully.";
                     }
                     else
                     {
                         Logger.LogWarning("Unsupported Reference Type: {ReferenceTypeId}.", ReferenceTypeId);
+
+                        Message = "Unsupported Reference Type. Please try again.";
                     }
                 }
                 catch (Exception exception)
                 {
                     Logger.LogError(exception, "An Exception occurred.");
+
+                    Message = "An error occurred while adding the Reference. Please try again later.";
                 }
             }
         }

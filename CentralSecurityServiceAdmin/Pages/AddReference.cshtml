@@ -22,6 +22,11 @@
 </script>
 
 <form method="POST" enctype="multipart/form-data">
+    @if (!string.IsNullOrWhiteSpace(Model.Message))
+    {
+        <div>@Model.Message</div>
+        <br />
+    }
     <div>
         Reference Type:
         <input asp-for="ReferenceTypeId" type="radio" id="ReferenceTypeImageId" value="@ReferenceType.Image" checked /> <label for="ReferenceTypeImageId">Image</label>
