@@ -1,0 +1,33 @@
+﻿@page
+@model CentralSecurityServiceAdmin.Pages.SignOutModel
+@{
+    ViewData["Title"] = "Sign In";
+}
+
+@section MetaTags {
+    <meta name="keywords" content="Central Security Service, CIA, NSA, MI6, SIS, MI5, GCHQ, Medical, Freemasons, In Memory, Duffy Group, Heritage, Legacy, Societal Development">
+}
+
+<h1>Sign Out</h1>
+
+<form method="POST">
+    <div>
+        You Are Signed In: @if (Model.UserSession.IsSignedIn)
+        {
+            <text>Yes</text>
+        }
+                else
+        {
+            <text>No</text>
+        }
+    </div>
+    <br />
+    <div>User Display Name: @Model.UserSession.DisplayName</div>
+    <br />
+    <div>User Roles Ids: @Model.UserSession.GetRoleIdsAsString()</div>
+    <div>User Roles Names: @Model.UserSession.GetRoleNamesAsString()</div>
+    <br />
+    <div>Message: <span>@Model.Message</span></div>
+    <br />
+    <input type="submit" name="Action" value="Sign Out" />
+</form>
