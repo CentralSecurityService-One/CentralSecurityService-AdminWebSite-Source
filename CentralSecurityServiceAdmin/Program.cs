@@ -45,8 +45,7 @@ namespace CentralSecurityServiceAdmin
 
             builder.Configuration.GetSection(CentralSecurityServiceAdminSettings.SectionName).Get<CentralSecurityServiceAdminSettings>();
 
-            builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.Folder, "CentralSecurityServiceCommon.settings.json"), optional: false, reloadOnChange: false);
-            builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.Folder, "CentralSecurityServiceAdminSensitive.settings.json"), optional: false, reloadOnChange: false);
+            builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.Folder, "CentralSecurityServiceAdmin.settings.json"), optional: false, reloadOnChange: false);
             builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.Folder, "Eadent.Identity.settings.json"), optional: false, reloadOnChange: false);
 
             builder.Configuration.GetSection(CentralSecurityServiceCommonSettings.SectionName).Get<CentralSecurityServiceCommonSettings>();
