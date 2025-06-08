@@ -33,6 +33,22 @@ namespace CentralSecurityServiceAdmin.PagesAdditional
             EadentUserIdentity = eadentUserIdentity;
         }
 
+        protected IActionResult EnsureUserIsSignedIn()
+        {
+            IActionResult actionResult = null;
+
+            if (!UserSession.IsSignedIn)
+            {
+                var returnUrl = Url.Page(PageContext.ActionDescriptor.ViewEnginePath) + Request.QueryString;
+
+                Logger.LogInformation("Redirecting to SignIn page at {DateTimeUtc}. Return Url: {ReturnUrl}", DateTime.UtcNow, returnUrl);
+
+                actionResult = RedirectToPage("/SignIn", new { returnUrl });
+            }
+
+            return actionResult;
+        }
+
         protected async Task<(bool success, decimal googleReCaptchaScore)> GoogleReCaptchaAsync()
         {
             var verifyRequestDto = new ReCaptchaVerifyRequestDto()

@@ -58,6 +58,23 @@
                 </text>
             }
             <hr />
+
+            <div>
+        You Are Signed In: @if (Model.UserSession.IsSignedIn)
+        {
+            <text>Yes</text>
+            <br />
+            <div>User Display Name: @Model.UserSession.DisplayName</div>
+            <br />
+            <div>User Roles Ids: @Model.UserSession.GetRoleIdsAsString()</div>
+            <div>User Roles Names: @Model.UserSession.GetRoleNamesAsString()</div>
+
+            <a href="/SignOut">Sign Out</a>
+        }
+        else
+        {
+            <text>No</text>
+        }
         </nav>
     </header>
 

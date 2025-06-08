@@ -18,6 +18,13 @@ namespace CentralSecurityServiceAdmin.Pages
         {
             Logger.LogInformation("Index page accessed at {DateTimeUtc}", DateTime.UtcNow);
 
+            IActionResult actionResult = EnsureUserIsSignedIn();
+
+            if (actionResult != null)
+            {
+                return actionResult; // Redirect to SignIn if user is not Signed In.
+            }
+
             return Page();
         }
     }

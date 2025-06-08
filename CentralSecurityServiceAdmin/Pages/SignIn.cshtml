@@ -4,6 +4,10 @@
     ViewData["Title"] = "Sign In";
 }
 
+@section MetaTags {
+    <meta name="keywords" content="Central Security Service, CIA, NSA, MI6, SIS, MI5, GCHQ, Medical, Freemasons, In Memory, Duffy Group, Heritage, Legacy, Societal Development">
+}
+
 <script src="https://www.google.com/recaptcha/api.js?render=@Model.GoogleReCaptchaSiteKey"></script>
 
 <script>
@@ -37,7 +41,6 @@
     <br />
     <div>Message: <span>@Model.Message</span></div>
     <br />
-    <p><strong>NOTE:</strong> For the purposes of this Alpha Software, any text may be used for the E-Mail Address Field.</p>
 
     <div>E-Mail Address: <input type="text" asp-for="EMailAddress" /></div>
     <div>Password: <input type="password" asp-for="Password" /></div>
@@ -45,6 +48,7 @@
     <input type="submit" name="Action" value="Sign In" />
     <input type="submit" name="Action" value="Cancel" />
 
+    <input type="hidden" asp-for="ReturnUrl" />
     <input type="hidden" id="GoogleReCaptchaValueId" asp-for="GoogleReCaptchaValue" />
 </form>
 <br />

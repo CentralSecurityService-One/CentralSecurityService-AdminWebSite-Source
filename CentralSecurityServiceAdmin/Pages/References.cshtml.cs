@@ -27,7 +27,14 @@ namespace CentralSecurityServiceAdmin.Pages
         {
             Logger.LogInformation("References page accessed.");
 
-            References = ReferencesRepository.GetAll().ToList(); // Example usage of the repository to fetch all references.
+            IActionResult actionResult = EnsureUserIsSignedIn();
+
+            if (actionResult != null)
+            {
+                return actionResult; // Redirect to SignIn if user is not Signed In.
+            }
+
+            References = ReferencesRepository.GetAll().ToList();
 
             return Page();
         }

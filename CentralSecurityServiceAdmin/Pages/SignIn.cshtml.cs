@@ -2,14 +2,11 @@ using CentralSecurityService.Common.Configuration;
 using CentralSecurityService.Common.DataAccess.CentralSecurityService.Repositories;
 using CentralSecurityServiceAdmin.PagesAdditional;
 using CentralSecurityServiceAdmin.Sessions;
-using Eadent.Common.WebApi.ApiClient;
-using Eadent.Common.WebApi.DataTransferObjects.Google;
 using Eadent.Common.WebApi.Helpers;
 using Eadent.Identity.Access;
 using Eadent.Identity.DataAccess.EadentUserIdentity.Entities;
 using Eadent.Identity.Definitions;
 using Microsoft.AspNetCore.Mvc;
-using Serilog.Context;
 
 namespace CentralSecurityServiceAdmin.Pages
 {
@@ -25,17 +22,18 @@ namespace CentralSecurityServiceAdmin.Pages
         [BindProperty]
         public string Password { get; set; }
 
-        public SignInModel(ILogger<SignInModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity, IReferencesRepository referencesRepository)
+        [BindProperty]
+        public string ReturnUrl { get; set; }
+
+        public SignInModel(ILogger<SignInModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity)
             : base(logger, configuration, userSession, eadentUserIdentity)
         {
             Logger = logger;
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
-            LogContext.PushProperty("SessionGuid", Guid.NewGuid().ToString());
-
-            Logger.LogInformation("SignIn page accessed at {DateTimeUtc}", DateTime.UtcNow);
+            ReturnUrl = returnUrl ?? Url.Content("~/");
 
             return Page();
         }
@@ -69,7 +67,7 @@ namespace CentralSecurityServiceAdmin.Pages
                     {
                         UserSession.SignIn(userSessionEntity);
 
-                        actionResult = Redirect("CheckAndUpdateUserSession");
+                        actionResult = LocalRedirect(ReturnUrl ?? Url.Content("~/"));
                     }
                     else
                     {
