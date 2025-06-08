@@ -16,6 +16,13 @@
             public string Folder { get; set; }
         }
 
+        public class ReferencesSettings
+        {
+            public string ReferenceFilesFolder { get; set; }
+        }
+
         public SensitiveSettings Sensitive { get; set; }
+
+        public ReferencesSettings References { get; set; }
     }
 }

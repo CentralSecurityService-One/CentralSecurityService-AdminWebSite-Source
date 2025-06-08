@@ -1,0 +1,105 @@
+﻿@page
+@using CentralSecurityService.Common.Definitions
+@model CentralSecurityServiceAdmin.Pages.AddReferenceModel
+@{
+    ViewData["Title"] = "Add Reference";
+}
+
+@section MetaTags {
+    <meta name="keywords" content="Central Security Service, CIA, NSA, MI6, SIS, MI5, GCHQ, Medical, Freemasons, In Memory, Duffy Group, Heritage, Legacy, Societal Development">
+}
+
+<h1>Add Reference</h1>
+
+<script src="https://www.google.com/recaptcha/api.js?render=@Model.GoogleReCaptchaSiteKey"></script>
+
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('@Model.GoogleReCaptchaSiteKey', { action: 'homepage' }).then(function (token) {
+            document.getElementById("GoogleReCaptchaValueId").value = token;
+        });
+    });
+</script>
+
+<form method="POST" enctype="multipart/form-data">
+    <div>
+        Reference Type:
+        <input asp-for="ReferenceTypeId" type="radio" id="ReferenceTypeImageId" value="@ReferenceType.Image" checked /> <label for="ReferenceTypeImageId">Image</label>
+        <input asp-for="ReferenceTypeId" type="radio" id="ReferenceTypeVideoUrlId" value="@ReferenceType.VideoUrl" /> <label for="ReferenceTypeVideoUrlId">Video Url</label>
+    </div>
+    <br />
+    <div id="divImageReference">
+        Image File: <input type="file" id="imageFileId" asp-for="ImageFileToUpload" />
+        <br />
+    </div>
+    <div id="divVideoUrl" hidden>
+        Video Url: <input type="text" id="videoUrlId" asp-for="VideoUrl" />
+        <br />
+    </div>
+    <br />
+    Thumbnail File: <input type="file" id="thumbnailFileId" asp-for="ThumbnailFileToUpload" />
+    <br />
+    <br />
+    <div>Description: <input type="text" asp-for="Description" /></div>
+    <br />
+    <div>Categorisations: <input type="text" asp-for="Categorisations" /></div>
+    <br />
+    <input type="submit" id="submitId" name="Action" value="Add Reference" />
+
+    <input type="hidden" id="GoogleReCaptchaValueId" asp-for="GoogleReCaptchaValue" />
+</form>
+<br />
+<br />
+
+@section Scripts
+{
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <!-- The following section of code relating to Toggling elements is courtesty of GitHub Copilot. -->
+    <script>
+        function toggleReferenceFields() {
+            if ($("#ReferenceTypeImageId").is(":checked")) {
+                $("#divImageReference").show();
+                $("#divVideoUrl").hide();
+            } else if ($("#ReferenceTypeVideoUrlId").is(":checked")) {
+                $("#divImageReference").hide();
+                $("#divVideoUrl").show();
+            }
+        }
+
+        $(document).ready(function () {
+            // Initial toggle on page load
+            toggleReferenceFields();
+
+            // Toggle on radio button change
+            $("input[name='ReferenceTypeId']").change(toggleReferenceFields);
+        });
+    </script>
+
+    <script>
+        $("#submitId").click(function(event) {
+
+            var preventDefault = true;
+
+            var files = $("#fileId").prop('files');
+
+            if (files.length <= 0) {
+
+                alert('No File has been Selected.');
+            } else {
+
+                var file = files[0];
+
+                if (file.size > 29000000) {
+                    alert('The File Size is Too Big to Upload.');
+                } else {
+                    preventDefault = false;
+                }
+            }
+
+            if (preventDefault) {
+                event.preventDefault();
+            }
+        });
+    </script>
+}
