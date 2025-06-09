@@ -45,8 +45,16 @@ namespace CentralSecurityServiceAdmin
 
             builder.Configuration.GetSection(CentralSecurityServiceAdminSettings.SectionName).Get<CentralSecurityServiceAdminSettings>();
 
-            builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.Folder, "CentralSecurityServiceAdmin.settings.json"), optional: false, reloadOnChange: false);
-            builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.Folder, "Eadent.Identity.settings.json"), optional: false, reloadOnChange: false);
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.DevelopmentFolder, "CentralSecurityServiceAdmin.settings.json"), optional: false, reloadOnChange: false);
+                builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.DevelopmentFolder, "Eadent.Identity.settings.json"), optional: false, reloadOnChange: false);
+            }
+            else
+            {
+                builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.ProductionFolder, "CentralSecurityServiceAdmin.settings.json"), optional: false, reloadOnChange: false);
+                builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceAdminSettings.Instance.Sensitive.ProductionFolder, "Eadent.Identity.settings.json"), optional: false, reloadOnChange: false);
+            }
 
             builder.Configuration.GetSection(CentralSecurityServiceCommonSettings.SectionName).Get<CentralSecurityServiceCommonSettings>();
             builder.Configuration.GetSection(CentralSecurityServiceAdminSensitiveSettings.SectionName).Get<CentralSecurityServiceAdminSensitiveSettings>();
