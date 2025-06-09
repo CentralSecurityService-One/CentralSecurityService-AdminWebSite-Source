@@ -7,6 +7,7 @@ using CentralSecurityServiceAdmin.Helpers;
 using CentralSecurityServiceAdmin.PagesAdditional;
 using CentralSecurityServiceAdmin.Sessions;
 using Eadent.Identity.Access;
+using Eadent.Identity.Definitions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CentralSecurityServiceAdmin.Pages
@@ -35,6 +36,13 @@ namespace CentralSecurityServiceAdmin.Pages
                 return actionResult; // Redirect to SignIn if user is not Signed In.
             }
 
+            (bool hasRole, IUserSession.IRole role) = UserSession.HasRole(Role.GlobalAdministrator);
+
+            if (!hasRole)
+            {
+                return LocalRedirect("/"); // User does not have the required Role.
+            }
+
             return Page();
         }
 
@@ -42,9 +50,18 @@ namespace CentralSecurityServiceAdmin.Pages
         {
             if (UserSession.IsSignedIn)
             {
-                if (action == "Add Data")
+                (bool hasRole, IUserSession.IRole role) = UserSession.HasRole(Role.GlobalAdministrator);
+
+                if (!hasRole)
                 {
-                    AddData();
+                    return LocalRedirect("/"); // User does not have the required Role.
+                }
+                else
+                {
+                    if (action == "Add Data")
+                    {
+                        AddData();
+                    }
                 }
             }
 
