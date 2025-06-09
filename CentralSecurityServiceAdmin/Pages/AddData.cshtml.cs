@@ -154,7 +154,7 @@ namespace CentralSecurityServiceAdmin.Pages
             AddReference(ReferenceType.Image, "05-Sinead_Frain-Bad_CIA-MI5-Bad_Medical-And-Bad_Freemason-www.LinkedIn.com-1551534145048.jpg", thumbnailFileName: null, "Sinead Frain", "\"Bad\" CIA, MI5, \"Bad\" Medical, \"Bad\" Freemason.");
             AddReference(ReferenceType.Image, "06-Manu_Gambhir-Bad_Freemason-At_Least-r225x225-www.PocketGamer.biz-2022_11_25.jpg", thumbnailFileName: null, "Manu Gambhir", "\"Bad\" Freemason At Least.");
             AddReference(ReferenceType.Image, "07-Dr._Galal_Badrawy-Bad_CIA-BSS-Bad_Medical-Bad_Freemason-www.Facebook.com-2022_11_28-18222387_364846557250351_8970463873198105780_n.jpg", thumbnailFileName: null, "Dr. Galal Badrawy", "\"Bad\" CIA, BSS, \"Bad\" Medical, \"Bad\" Freemason.");
-            AddReference(ReferenceType.Image, "08-Dr._Raju_Bangaru-Bad_Medical-At_Least-HealthService.hse.ie-May_2022_latest_cho_dncc_magazine-2022_11_30.png", thumbnailFileName: null, "Dr, Raju Bangaru", "\"Bad\" Medical At Least.");
+            AddReference(ReferenceType.Image, "08-Dr._Raju_Bangaru-Bad_Medical-At_Least-HealthService.hse.ie-May_2022_latest_cho_dncc_magazine-2022_11_30.png", thumbnailFileName: null, "Dr. Raju Bangaru", "\"Bad\" Medical At Least.");
             AddReference(ReferenceType.Image, "09-Andrew_Caras_Altas-Bad_Freemason-At_Least-www.Facebook.com-2022_12_01-420280_10151766083634768_314611671_n.jpg", thumbnailFileName: null, "Andrew Caras-Altas", "\"Bad\" Freemason At Least.");
             AddReference(ReferenceType.Image, "10-Jasmine_Fletcher-MI6-At_Least-1-7766-0-0.jpg", thumbnailFileName: null, "Jasmine Fletcher", "MI6 At Least.");
             AddReference(ReferenceType.Image, "11-Stephen_Hadfield-BSS-At_Least-1_0_1_1-0.jpg", thumbnailFileName: null, "Stephen Hadfield", "BSS At Least.");
@@ -169,7 +169,7 @@ namespace CentralSecurityServiceAdmin.Pages
             AddReference(ReferenceType.Image, "13-Éamonn_Anthony_Duffy-A_1-Gimp-Rotated_90_Degrees_Clockwise-Slice_20_80-20210924_204416-0-1.jpg", "Thumbnail_Width_125-13-Éamonn_Anthony_Duffy-A_1-Gimp-Rotated_90_Degrees_Clockwise-Slice_20_80-20210924_204416-0-1.jpg", "Eamonn/Éamonn Anthony Duffy.", "None - He is a \"1\".");
             AddReference(ReferenceType.Image, "14-Walter_Maguire-Gimp-Slice_66.6-Horizontal_10_50-www.Facebook.com-2025_06_08-468281894_10161023495633207_5359474878369017671_n-1-0.jpg", thumbnailFileName: null, "Walter Maguire.", "\"Bad\" CIA, \"Bad\" Freemason At Least.");
 
-            Message = "Test data added successfully.";
+            Message = "Data added successfully.";
         }
     }
 }
