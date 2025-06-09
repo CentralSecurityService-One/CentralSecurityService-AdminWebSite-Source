@@ -1,16 +1,19 @@
+using CentralSecurityServiceAdmin.Configuration;
 using CentralSecurityServiceAdmin.PagesAdditional;
 using CentralSecurityServiceAdmin.Sessions;
 using Eadent.Identity.Access;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace CentralSecurityServiceAdmin.Pages
 {
     public class GetReferenceFileModel : BasePageModel
     {
-        public GetReferenceFileModel(ILogger<GetReferenceFileModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity) : base(logger, configuration, userSession, eadentUserIdentity)
+        private IWebHostEnvironment WebHostEnvironment { get; }
+
+        public GetReferenceFileModel(ILogger<GetReferenceFileModel> logger, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity) : base(logger, configuration, userSession, eadentUserIdentity)
         {
+            WebHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> OnGetAsync(string referenceFile)
@@ -25,8 +28,18 @@ namespace CentralSecurityServiceAdmin.Pages
             if (string.IsNullOrEmpty(referenceFile))
                 return BadRequest("Reference File name cannot be null or empty.");
 
-            // TODO: Make path configurable or use a safer method to construct paths.
-            var filePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles", referenceFile);
+            string referenceFilesFolder = null;
+
+            if (WebHostEnvironment.IsDevelopment())
+            {
+                referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.DevelopmentReferenceFilesFolder;
+            }
+            else
+            {
+                referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.ProductionReferenceFilesFolder;
+            }
+
+            var filePathAndName = Path.Combine(referenceFilesFolder, referenceFile);
 
             if (!System.IO.File.Exists(filePathAndName))
                 return NotFound();

@@ -20,7 +20,9 @@
 
         public class ReferencesSettings
         {
-            public string ReferenceFilesFolder { get; set; }
+            public string DevelopmentReferenceFilesFolder { get; set; }
+
+            public string ProductionReferenceFilesFolder { get; set; }
         }
 
         public SensitiveSettings Sensitive { get; set; }

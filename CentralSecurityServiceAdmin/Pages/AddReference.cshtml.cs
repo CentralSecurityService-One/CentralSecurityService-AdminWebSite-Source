@@ -8,18 +8,15 @@ using CentralSecurityServiceAdmin.Helpers;
 using CentralSecurityServiceAdmin.PagesAdditional;
 using CentralSecurityServiceAdmin.Sessions;
 using Eadent.Identity.Access;
-using Eadent.Identity.Definitions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using SkiaSharp;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CentralSecurityServiceAdmin.Pages
 {
     public class AddReferenceModel : BasePageModel
     {
         private ILogger<AddReferenceModel> Logger { get; }
+
+        private IWebHostEnvironment WebHostEnvironment { get; }
 
         private ICentralSecurityServiceDatabase CentralSecurityServiceDatabase { get; set; }
 
@@ -48,10 +45,11 @@ namespace CentralSecurityServiceAdmin.Pages
         [BindProperty]
         public string Url { get; set; }
 
-        public AddReferenceModel(ILogger<AddReferenceModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity, ICentralSecurityServiceDatabase centralSecurityServiceDatabase, IReferencesRepository referencesRepository)
+        public AddReferenceModel(ILogger<AddReferenceModel> logger, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity, ICentralSecurityServiceDatabase centralSecurityServiceDatabase, IReferencesRepository referencesRepository)
             : base(logger, configuration, userSession, eadentUserIdentity)
         {
             Logger = logger;
+            WebHostEnvironment = webHostEnvironment;
             CentralSecurityServiceDatabase = centralSecurityServiceDatabase;
             ReferencesRepository = referencesRepository;
         }
@@ -153,6 +151,17 @@ namespace CentralSecurityServiceAdmin.Pages
 
             string thumbnailFilePathAndName = null;
 
+            string referenceFilesFolder = null;
+
+            if (WebHostEnvironment.IsDevelopment())
+            {
+                referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.DevelopmentReferenceFilesFolder;
+            }
+            else
+            {
+                referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.ProductionReferenceFilesFolder;
+            }
+
             if (ImageFileToUpload == null || ImageFileToUpload.Length == 0)
             {
                 Logger.LogWarning("No Image File was uploaded.");
@@ -163,7 +172,7 @@ namespace CentralSecurityServiceAdmin.Pages
                 uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
 
                 imageFileName = $"{uniqueReferenceId:R000_000_000}_000-{ImageFileToUpload.FileName}";
-                imageFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, imageFileName);
+                imageFilePathAndName = Path.Combine(referenceFilesFolder, imageFileName);
 
                 using (var fileStream = new FileStream(imageFilePathAndName, FileMode.Create))
                 {
@@ -174,7 +183,7 @@ namespace CentralSecurityServiceAdmin.Pages
             if (ThumbnailFileToUpload == null || ThumbnailFileToUpload.Length == 0)
             {
                 thumbnailFileName = $"{uniqueReferenceId:R000_000_000}_000-Thumbnail_Width_125-{Path.GetFileNameWithoutExtension(imageFileName)}.jpg";
-                thumbnailFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, thumbnailFileName);
+                thumbnailFilePathAndName = Path.Combine(referenceFilesFolder, thumbnailFileName);
 
                 ImageHelper.SaveThumbnailAsJpeg(imageFilePathAndName, thumbnailFilePathAndName, 125);
             }
@@ -182,7 +191,7 @@ namespace CentralSecurityServiceAdmin.Pages
             {
                 // TODO: Look to reduce Duplicate Code with AddVideoUrlReferenceAsync.
                 thumbnailFileName = $"{uniqueReferenceId:R000_000_000}_000-Thumbnail_Width_125-{Path.GetFileNameWithoutExtension(ThumbnailFileToUpload.FileName)}.jpg";
-                thumbnailFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, thumbnailFileName);
+                thumbnailFilePathAndName = Path.Combine(referenceFilesFolder, thumbnailFileName);
 
                 using (var fileStream = new FileStream(thumbnailFilePathAndName, FileMode.Create))
                 {
@@ -212,6 +221,16 @@ namespace CentralSecurityServiceAdmin.Pages
                 referenceName = VideoUrl.Trim();
             }
 
+            string referenceFilesFolder = null;
+
+            if (WebHostEnvironment.IsDevelopment())
+            {
+                referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.DevelopmentReferenceFilesFolder;
+            }
+            else
+            {
+                referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.ProductionReferenceFilesFolder;
+            }
             long uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
 
             if (ThumbnailFileToUpload == null || ThumbnailFileToUpload.Length == 0)
@@ -223,7 +242,7 @@ namespace CentralSecurityServiceAdmin.Pages
             {
                 // TODO: Look to reduce Duplicate Code with AddImageReferenceAsync.
                 thumbnailFileName = $"{uniqueReferenceId:R000_000_000}_000-Thumbnail_Width_125-{Path.GetFileNameWithoutExtension(ThumbnailFileToUpload.FileName)}.jpg";
-                thumbnailFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, thumbnailFileName);
+                thumbnailFilePathAndName = Path.Combine(referenceFilesFolder, thumbnailFileName);
 
                 using (var fileStream = new FileStream(thumbnailFilePathAndName, FileMode.Create))
                 {
@@ -242,6 +261,17 @@ namespace CentralSecurityServiceAdmin.Pages
             string thumbnailFileName = null;
 
             string thumbnailFilePathAndName = null;
+
+            string referenceFilesFolder = null;
+
+            if (WebHostEnvironment.IsDevelopment())
+            {
+                referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.DevelopmentReferenceFilesFolder;
+            }
+            else
+            {
+                referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.ProductionReferenceFilesFolder;
+            }
 
             if (string.IsNullOrWhiteSpace(Url))
             {
@@ -264,7 +294,7 @@ namespace CentralSecurityServiceAdmin.Pages
             {
                 // TODO: Look to reduce Duplicate Code with AddImageReferenceAsync.
                 thumbnailFileName = $"{uniqueReferenceId:R000_000_000}_000-Thumbnail_Width_125-{Path.GetFileNameWithoutExtension(ThumbnailFileToUpload.FileName)}.jpg";
-                thumbnailFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, thumbnailFileName);
+                thumbnailFilePathAndName = Path.Combine(referenceFilesFolder, thumbnailFileName);
 
                 using (var fileStream = new FileStream(thumbnailFilePathAndName, FileMode.Create))
                 {

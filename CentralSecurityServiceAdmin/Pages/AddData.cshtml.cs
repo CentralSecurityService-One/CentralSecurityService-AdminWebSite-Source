@@ -14,15 +14,18 @@ namespace CentralSecurityServiceAdmin.Pages
 {
     public class AddDataModel : BasePageModel
     {
+        private IWebHostEnvironment WebHostEnvironment { get; }
+
         private ICentralSecurityServiceDatabase CentralSecurityServiceDatabase { get; set; }
 
         private IReferencesRepository ReferencesRepository { get; set; }
 
         public string Message { get; set; }
 
-        public AddDataModel(ILogger<AddDataModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity, ICentralSecurityServiceDatabase centralSecurityServiceDatabase, IReferencesRepository referencesRepository)
+        public AddDataModel(ILogger<AddDataModel> logger, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity, ICentralSecurityServiceDatabase centralSecurityServiceDatabase, IReferencesRepository referencesRepository)
             : base(logger, configuration, userSession, eadentUserIdentity)
         {
+            WebHostEnvironment = webHostEnvironment;
             CentralSecurityServiceDatabase = centralSecurityServiceDatabase;
             ReferencesRepository = referencesRepository;
         }
@@ -82,25 +85,36 @@ namespace CentralSecurityServiceAdmin.Pages
 
             string referenceFileName = sourceReferenceName;
 
+            string referenceFilesFolder = null;
+
+            if (WebHostEnvironment.IsDevelopment())
+            {
+                referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.DevelopmentReferenceFilesFolder;
+            }
+            else
+            {
+                referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.ProductionReferenceFilesFolder;
+            }
+
             if (referenceType == ReferenceType.Image)
             {
                 referenceFileName = $"{uniqueReferenceId:R000_000_000}_000-{sourceReferenceName}";
 
                 // TODO: Make path fully configurable or use a safer method to construct paths.
-                imageSourceFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, "Source", sourceReferenceName);
+                imageSourceFilePathAndName = Path.Combine(referenceFilesFolder, "Source", sourceReferenceName);
 
-                imageDestinationFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, referenceFileName);
+                imageDestinationFilePathAndName = Path.Combine(referenceFilesFolder, referenceFileName);
 
                 System.IO.File.Copy(imageSourceFilePathAndName, imageDestinationFilePathAndName, true);
             }
 
             if (!string.IsNullOrWhiteSpace(thumbnailFileName))
             {
-                string thumbnailSourceFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, "Source", thumbnailFileName);
+                string thumbnailSourceFilePathAndName = Path.Combine(referenceFilesFolder, "Source", thumbnailFileName);
 
                 thumbnailDestinationFileName = $"{uniqueReferenceId:R000_000_000}_000-{thumbnailFileName}";
 
-                thumbnailDestinationFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, thumbnailDestinationFileName);
+                thumbnailDestinationFilePathAndName = Path.Combine(referenceFilesFolder, thumbnailDestinationFileName);
 
                 System.IO.File.Copy(thumbnailSourceFilePathAndName, thumbnailDestinationFilePathAndName, true);
             }
@@ -109,7 +123,7 @@ namespace CentralSecurityServiceAdmin.Pages
             {
                 thumbnailDestinationFileName = $"{uniqueReferenceId:R000_000_000}_000-Thumbnail_Width_125-{Path.GetFileNameWithoutExtension(sourceReferenceName)}.jpg";
 
-                thumbnailDestinationFilePathAndName = Path.Combine(CentralSecurityServiceAdminSettings.Instance.References.ReferenceFilesFolder, thumbnailDestinationFileName);
+                thumbnailDestinationFilePathAndName = Path.Combine(referenceFilesFolder, thumbnailDestinationFileName);
 
                 ImageHelper.SaveThumbnailAsJpeg(imageSourceFilePathAndName, thumbnailDestinationFilePathAndName, 125);
             }
