@@ -1,13 +1,27 @@
+using CentralSecurityServiceAdmin.PagesAdditional;
+using CentralSecurityServiceAdmin.Sessions;
+using Eadent.Identity.Access;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace CentralSecurityServiceAdmin.Pages
 {
-    public class GetReferenceFileModel : PageModel
+    public class GetReferenceFileModel : BasePageModel
     {
+        public GetReferenceFileModel(ILogger<GetReferenceFileModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity) : base(logger, configuration, userSession, eadentUserIdentity)
+        {
+        }
+
         public async Task<IActionResult> OnGetAsync(string referenceFile)
         {
+            IActionResult actionResult = EnsureUserIsSignedIn();
+
+            if (actionResult != null)
+            {
+                return actionResult; // Redirect to SignIn if user is not Signed In.
+            }
+
             if (string.IsNullOrEmpty(referenceFile))
                 return BadRequest("Reference File name cannot be null or empty.");
 
