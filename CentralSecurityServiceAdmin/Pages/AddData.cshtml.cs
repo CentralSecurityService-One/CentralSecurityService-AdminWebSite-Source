@@ -169,6 +169,8 @@ namespace CentralSecurityServiceAdmin.Pages
             AddReference(ReferenceType.Image, "13-Éamonn_Anthony_Duffy-A_1-Gimp-Rotated_90_Degrees_Clockwise-Slice_20_80-20210924_204416-0-1.jpg", "Thumbnail_Width_125-13-Éamonn_Anthony_Duffy-A_1-Gimp-Rotated_90_Degrees_Clockwise-Slice_20_80-20210924_204416-0-1.jpg", "Eamonn/Éamonn Anthony Duffy.", "None - He is a \"1\".");
             AddReference(ReferenceType.Image, "14-Walter_Maguire-Gimp-Slice_66.6-Horizontal_10_50-www.Facebook.com-2025_06_08-468281894_10161023495633207_5359474878369017671_n-1-0.jpg", thumbnailFileName: null, "Walter Maguire.", "\"Bad\" CIA, \"Bad\" Freemason At Least.");
 
+            AddReference(ReferenceType.VideoUrl, "https://youtu.be/jIqyQ9fT9dg", "Thumbnail_Width_125-2025_06_14-www.Ucc.ie-UCC-BP1-Photo-of-George-Boole-standing-267x420.png", "George Boole (In Memory).", "Unknown.");
+
             Message = "Data added successfully.";
         }
     }
