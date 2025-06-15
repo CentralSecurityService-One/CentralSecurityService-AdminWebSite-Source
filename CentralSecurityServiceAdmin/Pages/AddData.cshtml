@@ -13,5 +13,10 @@
 <form method="POST">
     <div>Message: <span>@Model.Message</span></div>
     <br />
+    <div>
+        <input type="checkbox" asp-for="OnlyAddIfUnique" checked="checked" />
+        <label asp-for="OnlyAddIfUnique">Only Add If Unique</label>
+    </div>
+    <br />
     <input type="submit" name="Action" value="Add Data" />
 </form>
