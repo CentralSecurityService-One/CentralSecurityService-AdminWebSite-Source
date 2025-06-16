@@ -216,6 +216,8 @@ namespace CentralSecurityServiceAdmin.Pages
             totalNumReferencesAdded += AddReference(OnlyAddIfUnique, ReferenceType.Image, "20250614_195612.jpg", thumbnailFileName: null, "Cork City, Ireland.", "Suspected \"Bad\" Freemasons, at least.");
             totalNumReferencesAdded += AddReference(OnlyAddIfUnique, ReferenceType.Image, "20250614_202752.jpg", thumbnailFileName: null, "Cork City, Ireland.", "Suspected \"Bad\" Freemasons, and Suspected \"Bad\" CIA, at least.");
 
+            totalNumReferencesAdded += AddReference(OnlyAddIfUnique, ReferenceType.Image, "20250616_190000.jpg", "Thumbnail_Width_125-20250616_190000.jpg", "Brown Bee, On A Car, Lucan, Co. Dublin, Ireland.", "None - Nature.");
+
             Message = $"{totalNumReferencesAdded} Reference(s) Added.";
         }
     }
