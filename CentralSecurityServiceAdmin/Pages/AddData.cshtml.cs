@@ -218,6 +218,9 @@ namespace CentralSecurityServiceAdmin.Pages
 
             totalNumReferencesAdded += AddReference(OnlyAddIfUnique, ReferenceType.Image, "20250616_190000.jpg", "Thumbnail_Width_125-20250616_190000.jpg", "A Dead Brown Bee, On A Car, Lucan, Co. Dublin, Ireland.", "None - Nature.");
 
+            totalNumReferencesAdded += AddReference(OnlyAddIfUnique, ReferenceType.Image, "15-Gary_Boyle-www.Facebook.com-2025_06_23-64803765_2099120116864965_2816587334504415232_n-0-0.png", thumbnailFileName: null, "Gary Boyle.", "\"Bad\" CIA, MI6, \"Bad\" Freemason.");
+            totalNumReferencesAdded += AddReference(OnlyAddIfUnique, ReferenceType.Image, "16-Emer_Boyle-www.Facebook.com-2025_06_23-505385803_10224272635683155_77870391914975521_n.jpg", thumbnailFileName: null, "Emer Boyle.", "\"Bad\" CIA, MI5, \"Bad\" Medical, \"Bad\" Freemason.");
+
             Message = $"{totalNumReferencesAdded} Reference(s) Added.";
         }
     }
