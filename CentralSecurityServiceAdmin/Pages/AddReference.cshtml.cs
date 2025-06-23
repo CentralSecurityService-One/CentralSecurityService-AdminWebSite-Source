@@ -86,19 +86,19 @@ namespace CentralSecurityServiceAdmin.Pages
                     {
                         if (ReferenceTypeId == ReferenceType.Image)
                         {
-                            await AddImageReferenceAsync();
+                            await AddImageReferenceAsync(HttpContext.RequestAborted);
 
                             Message = "Image Reference added successfully.";
                         }
                         else if (ReferenceTypeId == ReferenceType.VideoUrl)
                         {
-                            await AddVideoUrlReferenceAsync();
+                            await AddVideoUrlReferenceAsync(HttpContext.RequestAborted);
 
                             Message = "Video Url Reference added successfully.";
                         }
                         else if (ReferenceTypeId == ReferenceType.Url)
                         {
-                            await AddUrlReferenceAsync();
+                            await AddUrlReferenceAsync(HttpContext.RequestAborted);
 
                             Message = "Url Reference added successfully.";
                         }
@@ -119,7 +119,7 @@ namespace CentralSecurityServiceAdmin.Pages
             }
         }
 
-        private void AddReference(long uniqueReferenceId, ReferenceType referenceTypeId, string referenceName, string thumbnailFileName, string description, string categorisations)
+        private async Task AddReferenceAsync(long uniqueReferenceId, ReferenceType referenceTypeId, string referenceName, string thumbnailFileName, string description, string categorisations, CancellationToken cancellationToken = default)
         {
             var referenceEntity = new ReferenceEntity()
             {
@@ -133,13 +133,13 @@ namespace CentralSecurityServiceAdmin.Pages
                 CreatedDateTimeUtc = DateTime.UtcNow,
             };
 
-            ReferencesRepository.Create(referenceEntity);
-            ReferencesRepository.SaveChanges();
+            await ReferencesRepository.CreateAsync(referenceEntity, cancellationToken);
+            await ReferencesRepository.SaveChangesAsync(cancellationToken);
 
             Logger.LogInformation("Image Reference added successfully with UniqueReferenceId: {UniqueReferenceId}.", uniqueReferenceId);
         }
 
-        private async Task AddImageReferenceAsync()
+        private async Task AddImageReferenceAsync(CancellationToken cancellationToken = default)
         {
             long uniqueReferenceId = 0;
 
@@ -199,11 +199,11 @@ namespace CentralSecurityServiceAdmin.Pages
                 }
             }
 
-            AddReference(uniqueReferenceId, ReferenceType.Image, imageFileName, thumbnailFileName, Description, Categorisations);
+            await AddReferenceAsync(uniqueReferenceId, ReferenceType.Image, imageFileName, thumbnailFileName, Description, Categorisations, cancellationToken);
         }
 
         // TODO: Look to reduce Duplicate Code with AddUrlReferenceAsync.
-        private async Task AddVideoUrlReferenceAsync()
+        private async Task AddVideoUrlReferenceAsync(CancellationToken cancellationToken = default)
         {
             string referenceName = null;
 
@@ -250,11 +250,11 @@ namespace CentralSecurityServiceAdmin.Pages
                 }
             }
 
-            AddReference(uniqueReferenceId, ReferenceType.VideoUrl, referenceName, thumbnailFileName, Description, Categorisations);
+            await AddReferenceAsync(uniqueReferenceId, ReferenceType.VideoUrl, referenceName, thumbnailFileName, Description, Categorisations, cancellationToken);
         }
 
         // TODO: Look to reduce Duplicate Code with AddVideoUrlReferenceAsync.
-        private async Task AddUrlReferenceAsync()
+        private async Task AddUrlReferenceAsync(CancellationToken cancellationToken = default)
         {
             string referenceName = null;
 
@@ -302,7 +302,7 @@ namespace CentralSecurityServiceAdmin.Pages
                 }
             }
 
-            AddReference(uniqueReferenceId, ReferenceType.Url, referenceName, thumbnailFileName, Description, Categorisations);
+            await AddReferenceAsync(uniqueReferenceId, ReferenceType.Url, referenceName, thumbnailFileName, Description, Categorisations, cancellationToken);
         }
     }
 }
