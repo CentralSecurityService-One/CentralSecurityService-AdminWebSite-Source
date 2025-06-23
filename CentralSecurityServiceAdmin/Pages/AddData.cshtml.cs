@@ -220,6 +220,8 @@ namespace CentralSecurityServiceAdmin.Pages
 
             totalNumReferencesAdded += AddReference(OnlyAddIfUnique, ReferenceType.Image, "15-Gary_Boyle-www.Facebook.com-2025_06_23-64803765_2099120116864965_2816587334504415232_n-0-0.png", thumbnailFileName: null, "Gary Boyle.", "\"Bad\" CIA, MI6, \"Bad\" Freemason.");
             totalNumReferencesAdded += AddReference(OnlyAddIfUnique, ReferenceType.Image, "16-Emer_Boyle-www.Facebook.com-2025_06_23-505385803_10224272635683155_77870391914975521_n.jpg", thumbnailFileName: null, "Emer Boyle.", "\"Bad\" CIA, MI5, \"Bad\" Medical, \"Bad\" Freemason.");
+            totalNumReferencesAdded += AddReference(OnlyAddIfUnique, ReferenceType.Image, "17-Daire-Boyle-M24-Daire Boyle-Boyle_2.jpg", thumbnailFileName: null, "Daire Boyle.", "\"Bad\" CIA, \"Bad\" Freemason, at least.");
+            totalNumReferencesAdded += AddReference(OnlyAddIfUnique, ReferenceType.Image, "18-Bronwyn_Boyle-76648989_2536357966586983_6900569765157273600_n.jpg", thumbnailFileName: null, "Bronwyn Boyle.", "\"Bad\" CIA, \"Bad\" Freemason, at least.");
 
             Message = $"{totalNumReferencesAdded} Reference(s) Added.";
         }
