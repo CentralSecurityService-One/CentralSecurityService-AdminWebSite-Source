@@ -16,7 +16,7 @@ namespace CentralSecurityServiceAdmin.Pages
             WebHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IActionResult> OnGetAsync(string referenceFile)
+        public async Task<IActionResult> OnGetAsync(string type, string referenceFile)
         {
             IActionResult actionResult = EnsureUserIsSignedIn();
 
@@ -25,8 +25,16 @@ namespace CentralSecurityServiceAdmin.Pages
                 return actionResult; // Redirect to SignIn if user is not Signed In.
             }
 
-            if (string.IsNullOrEmpty(referenceFile))
-                return BadRequest("Reference File name cannot be null or empty.");
+            if (string.IsNullOrWhiteSpace(type))
+                return BadRequest("Type name cannot be null or whitespace.");
+
+            if (string.IsNullOrWhiteSpace(referenceFile))
+                return BadRequest("Reference File name cannot be null or whitespace.");
+
+            if ((type != "Thumbnail") && (type != "Full"))
+            {
+                return NotFound("The Type name is not recognised.");
+            }
 
             string referenceFilesFolder = null;
 

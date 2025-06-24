@@ -46,21 +46,21 @@
                         {
                             if (reference.ThumbnailFileName != null)
                             {
-                                <a target="_blank" href="@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail"/></a>
+                                <a target="_blank" href="@reference.ReferenceName"><img src="/GetReferenceFile?type=Thumbnail&referenceFile=@reference.ThumbnailFileName" alt="Thumbnail" /></a>
                             }
                         }
                         else if (reference.ReferenceTypeId == ReferenceType.Image)
                         {
                             if (reference.ThumbnailFileName != null)
                             {
-                                <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail" /></a>
+                                <a target="_blank" href="/GetReferenceFile?type=Full&referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?type=Thumbnail&referenceFile=@reference.ThumbnailFileName" alt="Thumbnail" /></a>
                             }
                         }
                     </td>
                     <td>
                         @if (reference.ReferenceTypeId == ReferenceType.Image)
                         {
-                            <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName">@reference.ReferenceName</a>
+                            <a target="_blank" href="/GetReferenceFile?type=Full&referenceFile=@reference.ReferenceName">@reference.ReferenceName</a>
                         }
                         else
                         {
