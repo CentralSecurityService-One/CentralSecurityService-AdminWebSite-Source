@@ -228,6 +228,8 @@ namespace CentralSecurityServiceAdmin.Pages
             totalNumReferencesAdded += await AddReferenceAsync(OnlyAddIfUnique, ReferenceType.Url, "https://www.Duffy.one/About.html", thumbnailFileName: null, "Duffy Group.", "Redacted Test.", redacted: true, cancellationToken);
 #endif
 
+            totalNumReferencesAdded += await AddReferenceAsync(OnlyAddIfUnique, ReferenceType.Url, "https://www.Payzone.ie/", "Thumbnail_Width_125-19-Payzone_Ireland-8300176baf159482.png", "Payzone Ireland.", "Lots of \"Bad\" CIA, MI5, \"Bad\" Freemasons and some MI6. But not all people.", redacted: false, cancellationToken);
+
             Message = $"{totalNumReferencesAdded} Reference(s) Added.";
         }
     }
