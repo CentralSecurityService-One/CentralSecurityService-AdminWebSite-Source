@@ -72,7 +72,13 @@ namespace CentralSecurityServiceAdmin.Pages
 
         public async Task<IActionResult> OnPostAsync(string action)
         {
-
+            // TODO: Validate User Input.
+            // TODO: REVIEW: Consider using a more secure way to handle Password Reset Codes? May already be sufficient when Database is added (e.g. Time-Limited codes).
+            // TODO: Implement E-Mail sending functionality.
+            // TODO: Implement Password Reset Code validation.
+            // TODO: Implement New Password setting functionality.
+            // TODO: Implement proper error handling and logging.
+            // TODO: REVIEW: Google ReCaptcha validation.
             if (UserSession.IsSignedIn)
             {
                 Logger.LogInformation("User is already Signed In. Redirecting to Index page at {DateTimeUtc}.", DateTime.UtcNow);
