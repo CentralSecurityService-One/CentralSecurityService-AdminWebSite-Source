@@ -22,11 +22,25 @@ namespace CentralSecurityServiceAdmin.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
+            if (!UserSession.IsSignedIn)
+            {
+                Logger.LogInformation("User is not Signed In. Redirecting to SignIn page at {DateTimeUtc}.", DateTime.UtcNow);
+
+                return LocalRedirect("/SignIn");
+            }
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string action)
         {
+            if (!UserSession.IsSignedIn)
+            {
+                Logger.LogInformation("User is not Signed In. Redirecting to SignIn page at {DateTimeUtc}.", DateTime.UtcNow);
+
+                return LocalRedirect("/SignIn");
+            }
+
             IActionResult actionResult = Page();
 
             if (action == "Sign Out")

@@ -35,11 +35,25 @@ namespace CentralSecurityServiceAdmin.Pages
         {
             ReturnUrl = returnUrl ?? Url.Content("~/");
 
+            if (UserSession.IsSignedIn)
+            {
+                Logger.LogInformation("User is already Signed In. Redirecting to ReturnUrl: {ReturnUrl} at {DateTimeUtc}.", ReturnUrl, DateTime.UtcNow);
+
+                return LocalRedirect(ReturnUrl);
+            }
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string action)
         {
+            if (UserSession.IsSignedIn)
+            {
+                Logger.LogInformation("User is already Signed In. Redirecting to ReturnUrl: {ReturnUrl} at {DateTimeUtc}.", ReturnUrl, DateTime.UtcNow);
+
+                return LocalRedirect(ReturnUrl);
+            }
+
             IActionResult actionResult = Page();
 
             (bool success, decimal googleReCaptchaScore) = await GoogleReCaptchaAsync();
