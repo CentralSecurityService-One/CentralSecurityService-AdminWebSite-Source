@@ -3,6 +3,7 @@ using CentralSecurityServiceAdmin.PagesAdditional;
 using CentralSecurityServiceAdmin.Sessions;
 using Eadent.Identity.Access;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace CentralSecurityServiceAdmin.Pages
 {
@@ -39,15 +40,20 @@ namespace CentralSecurityServiceAdmin.Pages
         }
 
         [BindProperty]
+        [EmailAddress(ErrorMessage = "Invalid E-Mail Address.")]
+        [Required(ErrorMessage = "E-Mail Address is required.")]
         public string EMailAddress { get; set; }
 
         [BindProperty]
+        [Required(ErrorMessage = "Password Reset Code is required.")]
         public string PasswordResetCode { get; set; }
 
         [BindProperty]
+        [Required(ErrorMessage = "New Password is required.")]
         public string NewPassword { get; set; }
 
         [BindProperty]
+        [Required(ErrorMessage = "Confirm New Password is required.")]
         public string ConfirmNewPassword { get; set; }
 
         public ResetPasswordModel(ILogger<ResetPasswordModel> logger, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity)
@@ -88,40 +94,83 @@ namespace CentralSecurityServiceAdmin.Pages
 
             if (State == ResetPasswordState.EnterEMailAddress)
             {
-                if (action == "Use E-Mail Address")
-                {
-                    // TODO: Validate EMailAddress.
-
-                    Message = "An E-Mail has been sent with a Password Reset Code if the E-Mail Address is recognised.";
-
-                    State = ResetPasswordState.EnterResetCode;
-                }
-                else if (action == "Cancel")
+                if (action == "Cancel")
                 {
                     return LocalRedirect(Url.Content("~/SignIn"));
+                }
+                else if (action == "Use E-Mail Address")
+                {
+                    // TODO: Validate EMailAddress.
+                    if (string.IsNullOrWhiteSpace(EMailAddress))
+                    {
+                        Message = "The E-Mail Address is required.";
+                    }
+                    else
+                    {
+                        Message = "An E-Mail has been sent with a Password Reset Code if the E-Mail Address is recognised.";
+
+                        State = ResetPasswordState.EnterResetCode;
+                    }
                 }
             }
             else if (State == ResetPasswordState.EnterResetCode)
             {
-                if (action == "Use Reset Code")
+                if (action == "Cancel")
                 {
-                    State = ResetPasswordState.EnterNewPassword;
+                    return LocalRedirect(Url.Content("~/SignIn"));
+                }
+                else if (action == "Use Reset Code")
+                {
+                    if (string.IsNullOrWhiteSpace(PasswordResetCode))
+                    {
+                        Message = "The Password Reset Code is required.";
+                    }
+                    else
+                    {
+                        if (PasswordResetCode != "123456") // TODO: Replace with actual validation logic.
+                        {
+                            Message = "The Password Reset Code is invalid.";
+                            PasswordResetCode = string.Empty;
+                            ModelState.Remove(nameof(PasswordResetCode));
+                        }
+                        else
+                        {
+                            Message = "The Password Reset Code is valid. Please enter your new Password.";
+                            State = ResetPasswordState.EnterNewPassword;
+                        }
+                    }
                 }
                 else if (action == "Request New Reset Code")
                 {
                     PasswordResetCode = string.Empty;
                     ModelState.Remove(nameof(PasswordResetCode));
                 }
-                else if (action == "Cancel")
-                {
-                    return LocalRedirect(Url.Content("~/SignIn"));
-                }
             }
             else if (State == ResetPasswordState.EnterNewPassword)
             {
-                if (action == "Set New Password")
+                if (action == "Cancel")
                 {
-                    if (NewPassword != ConfirmNewPassword)
+                    return LocalRedirect(Url.Content("~/SignIn"));
+                }
+                else if (action == "Set New Password")
+                {
+                    if (string.IsNullOrWhiteSpace(NewPassword))
+                    {
+                        Message = "The New Password is required.";
+                    }
+                    else if (string.IsNullOrWhiteSpace(ConfirmNewPassword))
+                    {
+                        Message = "The Confirm New Password is required.";
+                    }
+                    else if (NewPassword.Length < 8)
+                    {
+                        Message = "The New Password must be at least 8 characters long.";
+                    }
+                    else if (!NewPassword.Any(char.IsUpper) || !NewPassword.Any(char.IsLower) || !NewPassword.Any(char.IsDigit))
+                    {
+                        Message = "The New Password must contain at least one uppercase letter, one lowercase letter, and one digit.";
+                    }
+                    else if (NewPassword != ConfirmNewPassword)
                     {
                         Message = "The New Password and Confirm New Password do not match.";
                     }
