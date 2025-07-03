@@ -20,7 +20,9 @@ namespace CentralSecurityServiceAdmin.Pages
 
         private ILogger<ResetPasswordModel> Logger { get; }
 
-        public string Message { get; set; }
+        public string SuccessMessage { get; set; }
+
+        public string ErrorMessage { get; set; }
 
         public ResetPasswordState State
         {
@@ -137,11 +139,11 @@ namespace CentralSecurityServiceAdmin.Pages
             // TODO: Validate EMailAddress.
             if (string.IsNullOrWhiteSpace(EMailAddress))
             {
-                Message = "The E-Mail Address is required.";
+                ErrorMessage = "The E-Mail Address is required.";
             }
             else
             {
-                Message = "An E-Mail has been sent with a Password Reset Code if the E-Mail Address is recognised.";
+                SuccessMessage = "An E-Mail has been sent with a Password Reset Code if the E-Mail Address is recognised.";
 
                 State = ResetPasswordState.EnterResetCode;
             }
@@ -151,19 +153,19 @@ namespace CentralSecurityServiceAdmin.Pages
         {
             if (string.IsNullOrWhiteSpace(PasswordResetCode))
             {
-                Message = "The Password Reset Code is required.";
+                ErrorMessage = "The Password Reset Code is required.";
             }
             else
             {
                 if (PasswordResetCode != "123456") // TODO: Replace with actual validation logic.
                 {
-                    Message = "The Password Reset Code is invalid.";
+                    ErrorMessage = "The Password Reset Code is invalid.";
                     PasswordResetCode = string.Empty;
                     ModelState.Remove(nameof(PasswordResetCode));
                 }
                 else
                 {
-                    Message = "The Password Reset Code is valid. Please enter your new Password.";
+                    SuccessMessage = "The Password Reset Code is valid. Please enter your new Password.";
                     State = ResetPasswordState.EnterNewPassword;
                 }
             }
@@ -179,27 +181,27 @@ namespace CentralSecurityServiceAdmin.Pages
         {
             if (string.IsNullOrWhiteSpace(NewPassword))
             {
-                Message = "The New Password is required.";
+                ErrorMessage = "The New Password is required.";
             }
             else if (string.IsNullOrWhiteSpace(ConfirmNewPassword))
             {
-                Message = "The Confirm New Password is required.";
+                ErrorMessage = "The Confirm New Password is required.";
             }
             else if (NewPassword.Length < 8)
             {
-                Message = "The New Password must be at least 8 characters long.";
+                ErrorMessage = "The New Password must be at least 8 characters long.";
             }
             else if (!NewPassword.Any(char.IsUpper) || !NewPassword.Any(char.IsLower) || !NewPassword.Any(char.IsDigit))
             {
-                Message = "The New Password must contain at least one uppercase letter, one lowercase letter, and one digit.";
+                ErrorMessage = "The New Password must contain at least one uppercase letter, one lowercase letter, and one digit.";
             }
             else if (NewPassword != ConfirmNewPassword)
             {
-                Message = "The New Password and Confirm New Password do not match.";
+                ErrorMessage = "The New Password and Confirm New Password do not match.";
             }
             else
             {
-                Message = "Your Password has been Reset successfully. You can now Sign In with your new Password.";
+                SuccessMessage = "Your Password has been Reset successfully. You can now Sign In with your new Password.";
 
                 State = ResetPasswordState.Completed;
             }
