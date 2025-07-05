@@ -129,9 +129,12 @@ namespace CentralSecurityServiceAdmin.Pages
             {
                 if (action == "Cancel")
                 {
-                    await EadentUserIdentity.RollBackUserPasswordResetAsync(EMailAddress, PasswordResetCode, HttpHelper.GetRemoteIpAddress(Request), GoogleReCaptchaScore, HttpContext.RequestAborted);
+                    if (await GoogleReCaptchaScoreIsGoodAsync())
+                    {
+                        await EadentUserIdentity.RollBackUserPasswordResetAsync(EMailAddress, PasswordResetCode, HttpHelper.GetRemoteIpAddress(Request), GoogleReCaptchaScore, HttpContext.RequestAborted);
 
-                    return LocalRedirect(Url.Content("~/SignIn"));
+                        return LocalRedirect(Url.Content("~/SignIn"));
+                    }
                 }
                 else if (action == "Set New Password")
                 {
