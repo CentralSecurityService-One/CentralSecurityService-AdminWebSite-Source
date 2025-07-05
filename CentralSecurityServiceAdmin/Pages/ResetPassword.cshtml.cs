@@ -1,7 +1,13 @@
+using CentralSecurityService.Common.Configuration;
+using CentralSecurityServiceAdmin.Configuration;
 using CentralSecurityServiceAdmin.PagesAdditional;
 using CentralSecurityServiceAdmin.Sessions;
+using Eadent.Common.WebApi.Helpers;
 using Eadent.Identity.Access;
+using Eadent.Identity.Definitions;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit;
 using System.ComponentModel.DataAnnotations;
 
 namespace CentralSecurityServiceAdmin.Pages
@@ -101,7 +107,7 @@ namespace CentralSecurityServiceAdmin.Pages
                 }
                 else if (action == "Use E-Mail Address")
                 {
-                    HandleUseEMailAddress();
+                    await HandleUseEMailAddressAsync(HttpContext.RequestAborted);
                 }
             }
             else if (State == ResetPasswordState.EnterResetCode)
@@ -112,29 +118,103 @@ namespace CentralSecurityServiceAdmin.Pages
                 }
                 else if (action == "Use Reset Code")
                 {
-                    HandleUsePasswordResetCode();
+                    await HandleUsePasswordResetCodeAsync(HttpContext.RequestAborted);
                 }
                 else if (action == "Request New Reset Code")
                 {
-                    HandleRequestNewPasswordResetCode();
+                    await HandleRequestNewPasswordResetCodeAsync(HttpContext.RequestAborted);
                 }
             }
             else if (State == ResetPasswordState.EnterNewPassword)
             {
                 if (action == "Cancel")
                 {
+                    await EadentUserIdentity.RollBackUserPasswordResetAsync(EMailAddress, PasswordResetCode, HttpHelper.GetRemoteIpAddress(Request), GoogleReCaptchaScore, HttpContext.RequestAborted);
+
                     return LocalRedirect(Url.Content("~/SignIn"));
                 }
                 else if (action == "Set New Password")
                 {
-                    HandleSetNewPassword();
+                    await HandleSetNewPasswordAsync(HttpContext.RequestAborted);
                 }
             }
 
             return Page();
         }
 
-        private void HandleUseEMailAddress()
+        private async Task<bool> GoogleReCaptchaScoreIsGoodAsync()
+        {
+            (bool success, decimal googleReCaptchaScore) = await GoogleReCaptchaAsync();
+
+            GoogleReCaptchaScore = googleReCaptchaScore;
+
+            if ((!success) || (success && (googleReCaptchaScore < CentralSecurityServiceCommonSettings.Instance.GoogleReCaptcha.MinimumScore)))
+            {
+                ErrorMessage = "You may not proceed because of a poor Google ReCaptcha Score. Please Try Again.";
+
+                success = false;
+            }
+            else
+            {
+                success = true;
+            }
+
+            return success;
+        }
+
+        private async Task<bool> SendEMailAsync(string displayName, string eMailAddress, string userPasswordResetCode)
+        {
+            bool eMailSent = false;
+
+            var eMailSettings = CentralSecurityServiceAdminSensitiveSettings.Instance.EMail;
+
+            var subject = "CentralSecurityService Administration Password Reset.";
+
+            DateTime utcNow = DateTime.UtcNow;
+
+            string htmlBody = $"<html>Admin.CentralSecurityService.one Password Reset.<br><br>" +
+                $"Machine Name: <strong>{Environment.MachineName}</strong><br><br>" +
+                $"Url: <strong>{Request.Scheme}://{Request.Host}{Request.Path}</strong><br><br>" +
+                $"Date & Time (UTC): <strong>{utcNow:dddd, d-MMM-yyyy h:mm:ss tt}</strong><br><br>" +
+                $"Date & Time (Local): <strong>{utcNow.ToLocalTime():dddd, d-MMM-yyyy h:mm:ss tt}</strong><br><br>";
+
+            htmlBody += $"A Password Reset Request has been Received for your E-Mail Address.<br><br>" +
+                        $"Display Name: <strong>{displayName}</strong><br><br>" +
+                        $"E-Mail Address: <strong>{eMailAddress}</strong><br><br>" +
+                        $"Your Password Reset Code is: <strong>{userPasswordResetCode}</strong><br><br>" +
+                        $"If you did NOT Request a Password Reset, please ignore this E-Mail." +
+                        $"</html>";
+
+            var eMailMessage = new MimeMessage();
+            eMailMessage.From.Add(new MailboxAddress("Central Security Service Administration", eMailSettings.FromEMailAddress));
+            eMailMessage.To.Add(new MailboxAddress(displayName, eMailAddress));
+            eMailMessage.Subject = subject;
+            eMailMessage.Body = new TextPart("html")
+            {
+                Text = htmlBody
+            };
+
+            try
+            {
+                using var smtp = new SmtpClient();
+                await smtp.ConnectAsync(eMailSettings.HostName, eMailSettings.HostPort, true);
+                await smtp.AuthenticateAsync(eMailSettings.SenderEMailAddress, eMailSettings.SenderPassword);
+                await smtp.SendAsync(eMailMessage);
+                await smtp.DisconnectAsync(true);
+
+                eMailSent = true;
+            }
+            catch (Exception exception)
+            {
+                Logger.LogWarning(exception, "There was an Exception sending the Password Reset Code E-Mail for: {EMailAddress}.", EMailAddress);
+
+                eMailSent = false;
+            }
+
+            return eMailSent;
+        }
+
+        private async Task HandleUseEMailAddressAsync(CancellationToken cancellationToken)
         {
             // TODO: Validate EMailAddress.
             if (string.IsNullOrWhiteSpace(EMailAddress))
@@ -143,13 +223,32 @@ namespace CentralSecurityServiceAdmin.Pages
             }
             else
             {
-                SuccessMessage = "An E-Mail has been sent with a Password Reset Code if the E-Mail Address is recognised.";
+                if (await GoogleReCaptchaScoreIsGoodAsync())
+                {
+                    (UserPasswordResetStatus userPasswordResetStatusId, string displayName, string userPasswordResetCode) = await EadentUserIdentity.BeginUserPasswordResetAsync(EMailAddress, HttpHelper.GetRemoteIpAddress(Request), GoogleReCaptchaScore, cancellationToken);
 
-                State = ResetPasswordState.EnterResetCode;
+                    bool bContinue = true;
+
+                    if (userPasswordResetStatusId == UserPasswordResetStatus.NewRequest)
+                    {
+                        bContinue = await SendEMailAsync(displayName, EMailAddress, userPasswordResetCode);
+                    }
+
+                    if (bContinue)
+                    {
+                        SuccessMessage = "An E-Mail has been sent with a Password Reset Code if the E-Mail Address is recognised.";
+
+                        State = ResetPasswordState.EnterResetCode;
+                    }
+                    else
+                    {
+                        ErrorMessage = "There was an error sending your Password Reset Code. Please try again later.";
+                    }
+                }
             }
         }
 
-        private void HandleUsePasswordResetCode()
+        private async Task HandleUsePasswordResetCodeAsync(CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(PasswordResetCode))
             {
@@ -157,53 +256,91 @@ namespace CentralSecurityServiceAdmin.Pages
             }
             else
             {
-                if (PasswordResetCode != "123456") // TODO: Replace with actual validation logic.
+                if (await GoogleReCaptchaScoreIsGoodAsync())
                 {
-                    ErrorMessage = "The Password Reset Code is invalid.";
+                    UserPasswordResetStatus userPasswordResetStatusId = await EadentUserIdentity.TryUserPasswordResetCodeAsync(EMailAddress, PasswordResetCode, HttpHelper.GetRemoteIpAddress(Request), GoogleReCaptchaScore, cancellationToken);
+
+                    if (userPasswordResetStatusId == UserPasswordResetStatus.LimitsReached)
+                    {
+                        ErrorMessage = "You have reached the maximum number of attempts to enter a Password Reset Code. Please try again later.";
+                        PasswordResetCode = string.Empty;
+                        ModelState.Remove(nameof(PasswordResetCode));
+                    }
+                    else if (userPasswordResetStatusId == UserPasswordResetStatus.InvalidResetCode)
+                    {
+                        ErrorMessage = "The Password Reset Code is invalid.";
+                        PasswordResetCode = string.Empty;
+                        ModelState.Remove(nameof(PasswordResetCode));
+                    }
+                    else
+                    {
+                        SuccessMessage = "The Password Reset Code is valid. Please enter your new Password.";
+                        State = ResetPasswordState.EnterNewPassword;
+                    }
+                }
+            }
+        }
+
+        private async Task HandleRequestNewPasswordResetCodeAsync(CancellationToken cancellationToken)
+        {
+            if (await GoogleReCaptchaScoreIsGoodAsync())
+            {
+                (UserPasswordResetStatus userPasswordResetStatusId, string userPasswordResetCode) = await EadentUserIdentity.RequestNewUserPasswordResetCodeAsync(EMailAddress, HttpHelper.GetRemoteIpAddress(Request), GoogleReCaptchaScore, cancellationToken);
+
+                if (userPasswordResetStatusId == UserPasswordResetStatus.LimitsReached)
+                {
+                    ErrorMessage = "You have reached the maximum number of attempts to Request a New Password Reset Code. Please try again later.";
                     PasswordResetCode = string.Empty;
                     ModelState.Remove(nameof(PasswordResetCode));
                 }
-                else
+                else if (userPasswordResetStatusId == UserPasswordResetStatus.NewRequest)
                 {
-                    SuccessMessage = "The Password Reset Code is valid. Please enter your new Password.";
-                    State = ResetPasswordState.EnterNewPassword;
+                    PasswordResetCode = userPasswordResetCode;
                 }
             }
         }
 
-        private void HandleRequestNewPasswordResetCode()
+        private async Task HandleSetNewPasswordAsync(CancellationToken cancellationToken)
         {
-            PasswordResetCode = string.Empty;
-            ModelState.Remove(nameof(PasswordResetCode));
-        }
+            if (await GoogleReCaptchaScoreIsGoodAsync())
+            {
+                if (string.IsNullOrWhiteSpace(NewPassword))
+                {
+                    ErrorMessage = "The New Password is required.";
+                }
+                else if (string.IsNullOrWhiteSpace(ConfirmNewPassword))
+                {
+                    ErrorMessage = "The Confirm New Password is required.";
+                }
+                else if (NewPassword.Length < 8)
+                {
+                    ErrorMessage = "The New Password must be at least 8 characters long.";
+                }
+                else if (!NewPassword.Any(char.IsUpper) || !NewPassword.Any(char.IsLower) || !NewPassword.Any(char.IsDigit))
+                {
+                    ErrorMessage = "The New Password must contain at least one uppercase letter, one lowercase letter, and one digit.";
+                }
+                else if (NewPassword != ConfirmNewPassword)
+                {
+                    ErrorMessage = "The New Password and Confirm New Password do not match.";
+                }
+                else
+                {
+                    UserPasswordResetStatus userPasswordResetStatusId = await EadentUserIdentity.CommitUserPasswordResetAsync(EMailAddress, PasswordResetCode, NewPassword, HttpHelper.GetRemoteIpAddress(Request), GoogleReCaptchaScore, cancellationToken);
 
-        private void HandleSetNewPassword()
-        {
-            if (string.IsNullOrWhiteSpace(NewPassword))
-            {
-                ErrorMessage = "The New Password is required.";
-            }
-            else if (string.IsNullOrWhiteSpace(ConfirmNewPassword))
-            {
-                ErrorMessage = "The Confirm New Password is required.";
-            }
-            else if (NewPassword.Length < 8)
-            {
-                ErrorMessage = "The New Password must be at least 8 characters long.";
-            }
-            else if (!NewPassword.Any(char.IsUpper) || !NewPassword.Any(char.IsLower) || !NewPassword.Any(char.IsDigit))
-            {
-                ErrorMessage = "The New Password must contain at least one uppercase letter, one lowercase letter, and one digit.";
-            }
-            else if (NewPassword != ConfirmNewPassword)
-            {
-                ErrorMessage = "The New Password and Confirm New Password do not match.";
-            }
-            else
-            {
-                SuccessMessage = "Your Password has been Reset successfully. You can now Sign In with your new Password.";
+                    if (userPasswordResetStatusId != UserPasswordResetStatus.Success)
+                    {
+                        ErrorMessage = "There was an error resetting your Password. Please try again later.";
 
-                State = ResetPasswordState.Completed;
+                        Logger.LogError("Password Reset failed for E-Mail Address {EMailAddress} at {DateTimeUtc}. UserPasswordResetStatusId: {UserPasswordResetStatusId}.", EMailAddress, DateTime.UtcNow, userPasswordResetStatusId);
+                    }
+                    else
+                    {
+                        SuccessMessage = "Your Password has been Reset successfully. You can now Sign In with your new Password.";
+
+                        State = ResetPasswordState.Completed;
+                    }
+                }
             }
         }
     }
