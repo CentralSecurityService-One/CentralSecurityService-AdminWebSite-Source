@@ -56,49 +56,67 @@ namespace CentralSecurityServiceAdmin.Pages.Special
                     }
                     else
                     {
-                        bool userExists = EadentUserIdentity.AdminDoesUserExist(CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress);
+                        bool userExists = await EadentUserIdentity.AdminDoesUserExistAsync(CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress, HttpContext.RequestAborted);
 
                         if (userExists)
                         {
-                            UserEntity userEntity = EadentUserIdentity.AdminForceUserPasswordChange(
-                                CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress,
-                                Guid.Parse(CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminUserGuid),
-                                CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminPassword,
-                                HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore);
+                            try
+                            {
+                                UserEntity userEntity = await EadentUserIdentity.AdminForceUserPasswordChangeAsync(
+                                    CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress,
+                                    Guid.Parse(CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminUserGuid),
+                                    CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminPassword,
+                                    HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore, HttpContext.RequestAborted);
 
-                            if (userEntity != null)
-                            {
-                                actionResult = Redirect("/SignIn");
+                                if (userEntity != null)
+                                {
+                                    actionResult = Redirect("/SignIn");
+                                }
+                                else
+                                {
+                                    Message = "Failed to Update the Global Administrator account. Please try again later.";
+                                }
                             }
-                            else
+                            catch (Exception exception)
                             {
-                                Message = "Failed to create the Global Administrator account. Please try again later.";
+                                Logger.LogError(exception, "An error occurred while trying to Update the Global Administrator account at {DateTimeUtc}.", DateTime.UtcNow);
+
+                                Message = "An error occurred while trying to Update the Global Administrator account. Please try again later.";
                             }
                         }
                         else
                         {
-                            int createdByApplicationId = 0;
-                            string userGuidString = null;
-                            string displayName = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminDisplayName;
-                            string eMailAddress = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress;
-                            string password = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminPassword;
-                            string mobilePhoneNumber = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminMobilePhoneNumber;
-
-                            if (string.IsNullOrWhiteSpace(mobilePhoneNumber))
+                            try
                             {
-                                mobilePhoneNumber = null;
+                                int createdByApplicationId = 0;
+                                string userGuidString = null;
+                                string displayName = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminDisplayName;
+                                string eMailAddress = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress;
+                                string password = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminPassword;
+                                string mobilePhoneNumber = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminMobilePhoneNumber;
+
+                                if (string.IsNullOrWhiteSpace(mobilePhoneNumber))
+                                {
+                                    mobilePhoneNumber = null;
+                                }
+
+                                (RegisterUserStatus registerUserStatusId, UserEntity userEntity) = EadentUserIdentity.RegisterUser(createdByApplicationId, userGuidString, Role.GlobalAdministrator,
+                                    displayName, eMailAddress, mobilePhoneNumber, password, HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore);
+
+                                if (registerUserStatusId == RegisterUserStatus.Success)
+                                {
+                                    actionResult = Redirect("/SignIn");
+                                }
+                                else
+                                {
+                                    Message = $"RegisterUserStatusId = {registerUserStatusId}";
+                                }
                             }
-
-                            (RegisterUserStatus registerUserStatusId, UserEntity userEntity) = EadentUserIdentity.RegisterUser(createdByApplicationId, userGuidString, Role.GlobalAdministrator,
-                                displayName, eMailAddress, mobilePhoneNumber, password, HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore);
-
-                            if (registerUserStatusId == RegisterUserStatus.Success)
+                            catch (Exception exception)
                             {
-                                actionResult = Redirect("/SignIn");
-                            }
-                            else
-                            {
-                                Message = $"RegisterUserStatusId = {registerUserStatusId}";
+                                Logger.LogError(exception, "An error occurred while trying to Create the Global Administrator account at {DateTimeUtc}.", DateTime.UtcNow);
+
+                                Message = "An error occurred while trying to Create the Global Administrator account. Please try again later.";
                             }
                         }
                     }
