@@ -79,6 +79,7 @@ namespace CentralSecurityServiceAdmin.Pages.Special
                         {
                             int createdByApplicationId = 0;
                             string userGuidString = null;
+                            string displayName = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminDisplayName;
                             string eMailAddress = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminEMailAddress;
                             string password = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminPassword;
                             string mobilePhoneNumber = CentralSecurityServiceAdminSensitiveSettings.Instance.AdminAccount.AdminMobilePhoneNumber;
@@ -89,7 +90,7 @@ namespace CentralSecurityServiceAdmin.Pages.Special
                             }
 
                             (RegisterUserStatus registerUserStatusId, UserEntity userEntity) = EadentUserIdentity.RegisterUser(createdByApplicationId, userGuidString, Role.GlobalAdministrator,
-                                eMailAddress, eMailAddress, mobilePhoneNumber, password, HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore);
+                                displayName, eMailAddress, mobilePhoneNumber, password, HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore);
 
                             if (registerUserStatusId == RegisterUserStatus.Success)
                             {

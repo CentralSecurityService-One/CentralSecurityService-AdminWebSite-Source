@@ -171,7 +171,7 @@ namespace CentralSecurityServiceAdmin.Pages
 
             var eMailSettings = CentralSecurityServiceAdminSensitiveSettings.Instance.EMail;
 
-            var subject = "CentralSecurityService Administration Password Reset.";
+            var subject = "Central Security Service Administration Password Reset.";
 
             DateTime utcNow = DateTime.UtcNow;
 
@@ -266,8 +266,24 @@ namespace CentralSecurityServiceAdmin.Pages
                     if (userPasswordResetStatusId == UserPasswordResetStatus.LimitsReached)
                     {
                         ErrorMessage = "You have reached the maximum number of attempts to enter a Password Reset Code. Please try again later.";
+
+                        EMailAddress = string.Empty;
+                        ModelState.Remove(nameof(EMailAddress));
                         PasswordResetCode = string.Empty;
                         ModelState.Remove(nameof(PasswordResetCode));
+
+                        State = ResetPasswordState.EnterEMailAddress;
+                    }
+                    else if (userPasswordResetStatusId == UserPasswordResetStatus.TimedOutExpired)
+                    {
+                        ErrorMessage = "The Password Reset has Timed Out and Expired. Please Restart the Password Request Process.";
+
+                        EMailAddress = string.Empty;
+                        ModelState.Remove(nameof(EMailAddress));
+                        PasswordResetCode = string.Empty;
+                        ModelState.Remove(nameof(PasswordResetCode));
+
+                        State = ResetPasswordState.EnterEMailAddress;
                     }
                     else if (userPasswordResetStatusId == UserPasswordResetStatus.InvalidResetCode)
                     {
@@ -288,17 +304,36 @@ namespace CentralSecurityServiceAdmin.Pages
         {
             if (await GoogleReCaptchaScoreIsGoodAsync())
             {
-                (UserPasswordResetStatus userPasswordResetStatusId, string userPasswordResetCode) = await EadentUserIdentity.RequestNewUserPasswordResetCodeAsync(EMailAddress, HttpHelper.GetRemoteIpAddress(Request), GoogleReCaptchaScore, cancellationToken);
+                (UserPasswordResetStatus userPasswordResetStatusId, string displayName, string userPasswordResetCode) = await EadentUserIdentity.RequestNewUserPasswordResetCodeAsync(EMailAddress, HttpHelper.GetRemoteIpAddress(Request), GoogleReCaptchaScore, cancellationToken);
 
                 if (userPasswordResetStatusId == UserPasswordResetStatus.LimitsReached)
                 {
                     ErrorMessage = "You have reached the maximum number of attempts to Request a New Password Reset Code. Please try again later.";
+
+                    EMailAddress = string.Empty;
+                    ModelState.Remove(nameof(EMailAddress));
                     PasswordResetCode = string.Empty;
                     ModelState.Remove(nameof(PasswordResetCode));
+
+                    State = ResetPasswordState.EnterEMailAddress;
+                }
+                else if (userPasswordResetStatusId == UserPasswordResetStatus.TimedOutExpired)
+                {
+                    ErrorMessage = "The Password Reset has Timed Out and Expired. Please Restart the Password Request Process.";
+
+                    EMailAddress = string.Empty;
+                    ModelState.Remove(nameof(EMailAddress));
+                    PasswordResetCode = string.Empty;
+                    ModelState.Remove(nameof(PasswordResetCode));
+
+                    State = ResetPasswordState.EnterEMailAddress;
                 }
                 else if (userPasswordResetStatusId == UserPasswordResetStatus.NewRequest)
                 {
-                    PasswordResetCode = userPasswordResetCode;
+                    PasswordResetCode = string.Empty;
+                    ModelState.Remove(nameof(PasswordResetCode));
+
+                    await SendEMailAsync(displayName, EMailAddress, userPasswordResetCode);
                 }
             }
         }
@@ -331,7 +366,20 @@ namespace CentralSecurityServiceAdmin.Pages
                 {
                     UserPasswordResetStatus userPasswordResetStatusId = await EadentUserIdentity.CommitUserPasswordResetAsync(EMailAddress, PasswordResetCode, NewPassword, HttpHelper.GetRemoteIpAddress(Request), GoogleReCaptchaScore, cancellationToken);
 
-                    if (userPasswordResetStatusId != UserPasswordResetStatus.Success)
+                    if (userPasswordResetStatusId == UserPasswordResetStatus.TimedOutExpired)
+                    {
+                        ErrorMessage = "The Password Reset has Timed Out and Expired. Please Restart the Password Request Process.";
+
+                        EMailAddress = string.Empty;
+                        ModelState.Remove(nameof(EMailAddress));
+                        PasswordResetCode = string.Empty;
+                        ModelState.Remove(nameof(PasswordResetCode));
+
+                        Logger.LogError("Password Reset failed for E-Mail Address {EMailAddress} at {DateTimeUtc}. UserPasswordResetStatusId: {UserPasswordResetStatusId}.", EMailAddress, DateTime.UtcNow, userPasswordResetStatusId);
+
+                        State = ResetPasswordState.EnterEMailAddress;
+                    }
+                    else if (userPasswordResetStatusId != UserPasswordResetStatus.ValidResetCode)
                     {
                         ErrorMessage = "There was an error resetting your Password. Please try again later.";
 

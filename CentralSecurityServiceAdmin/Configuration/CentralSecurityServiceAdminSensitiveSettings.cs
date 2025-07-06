@@ -13,6 +13,8 @@
 
         public class AdminAccountSettings
         {
+            public string AdminDisplayName { get; set; }
+
             public string AdminEMailAddress { get; set; }
 
             public string AdminUserGuid { get; set; }
