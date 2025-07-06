@@ -294,6 +294,7 @@ namespace CentralSecurityServiceAdmin.Pages
                     else
                     {
                         SuccessMessage = "The Password Reset Code is valid. Please enter your new Password.";
+
                         State = ResetPasswordState.EnterNewPassword;
                     }
                 }
