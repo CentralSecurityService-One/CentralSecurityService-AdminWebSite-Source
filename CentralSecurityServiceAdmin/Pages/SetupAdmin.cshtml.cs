@@ -100,8 +100,8 @@ namespace CentralSecurityServiceAdmin.Pages.Special
                                     mobilePhoneNumber = null;
                                 }
 
-                                (RegisterUserStatus registerUserStatusId, UserEntity userEntity) = EadentUserIdentity.RegisterUser(createdByApplicationId, userGuidString, Role.GlobalAdministrator,
-                                    displayName, eMailAddress, mobilePhoneNumber, password, HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore);
+                                (RegisterUserStatus registerUserStatusId, UserEntity userEntity) = await EadentUserIdentity.RegisterUserAsync(createdByApplicationId, userGuidString, Role.GlobalAdministrator,
+                                    displayName, eMailAddress, mobilePhoneNumber, password, HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore, HttpContext.RequestAborted);
 
                                 if (registerUserStatusId == RegisterUserStatus.Success)
                                 {

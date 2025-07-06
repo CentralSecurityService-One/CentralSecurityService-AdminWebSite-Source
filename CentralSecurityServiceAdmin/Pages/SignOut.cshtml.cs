@@ -45,7 +45,7 @@ namespace CentralSecurityServiceAdmin.Pages
 
             if (action == "Sign Out")
             {
-                SignOutStatus signOutStatusId = EadentUserIdentity.SignOutUser(UserSession.SessionToken, HttpHelper.GetRemoteIpAddress(Request));
+                SignOutStatus signOutStatusId = await EadentUserIdentity.SignOutUserAsync(UserSession.SessionToken, HttpHelper.GetRemoteIpAddress(Request), HttpContext.RequestAborted);
 
                 if (signOutStatusId != SignOutStatus.Error)
                 {

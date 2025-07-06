@@ -75,7 +75,7 @@ namespace CentralSecurityServiceAdmin.Pages
                 }
                 else if (action == "Sign In")
                 {
-                    (SignInStatus signInStatusId, UserSessionEntity userSessionEntity, DateTime? previousUserSignInDateTimeUtc) = EadentUserIdentity.SignInUser(SignInType.WebSite, EMailAddress, Password, HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore);
+                    (SignInStatus signInStatusId, UserSessionEntity userSessionEntity, DateTime? previousUserSignInDateTimeUtc) = await EadentUserIdentity.SignInUserAsync(SignInType.WebSite, EMailAddress, Password, HttpHelper.GetRemoteIpAddress(Request), googleReCaptchaScore, HttpContext.RequestAborted);
 
                     if (signInStatusId == SignInStatus.Success)
                     {
