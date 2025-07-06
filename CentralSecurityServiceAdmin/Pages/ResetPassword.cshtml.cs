@@ -285,17 +285,17 @@ namespace CentralSecurityServiceAdmin.Pages
 
                         State = ResetPasswordState.EnterEMailAddress;
                     }
-                    else if (userPasswordResetStatusId == UserPasswordResetStatus.InvalidResetCode)
-                    {
-                        ErrorMessage = "The Password Reset Code is invalid.";
-                        PasswordResetCode = string.Empty;
-                        ModelState.Remove(nameof(PasswordResetCode));
-                    }
-                    else
+                    else if (userPasswordResetStatusId == UserPasswordResetStatus.ValidResetCode)
                     {
                         SuccessMessage = "The Password Reset Code is valid. Please enter your new Password.";
 
                         State = ResetPasswordState.EnterNewPassword;
+                    }
+                    else // Default.
+                    {
+                        ErrorMessage = "The Password Reset Code is invalid.";
+                        PasswordResetCode = string.Empty;
+                        ModelState.Remove(nameof(PasswordResetCode));
                     }
                 }
             }
