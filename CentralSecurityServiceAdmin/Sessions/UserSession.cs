@@ -52,9 +52,10 @@ namespace CentralSecurityServiceAdmin.Sessions
         {
             HttpContext?.Session.SetString(SignedInTokenName, SessionToken);
 
-            LogContext.PushProperty("SessionGuid", SessionGuid); 
+            LogContext.PushProperty("SessionGuid", SessionGuid);
 
-            Logger.LogInformation($"UserSessionToken = {SessionToken} : UserSessionGuid = {SessionGuid}");
+            // The following line is commented out to avoid Log Files being filled with SessionToken and SessionGuid information for every Page invoked.
+            //Logger.LogInformation($"UserSessionToken = {SessionToken} : UserSessionGuid = {SessionGuid}");
         }
 
         private void HandleSignedInSession(UserSessionEntity userSessionEntity)
