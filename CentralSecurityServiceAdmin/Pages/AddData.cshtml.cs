@@ -170,8 +170,8 @@ namespace CentralSecurityServiceAdmin.Pages
                 CreatedDateTimeUtc = DateTime.UtcNow,
             };
 
-            ReferencesRepository.Create(referenceEntity);
-            ReferencesRepository.SaveChanges();
+            await ReferencesRepository.CreateAsync(referenceEntity, cancellationToken);
+            await ReferencesRepository.SaveChangesAsync(cancellationToken);
 
             ++numReferencesAdded;
 

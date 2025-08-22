@@ -33,7 +33,7 @@ namespace CentralSecurityServiceAdmin.Pages
                 return actionResult; // Redirect to SignIn if user is not Signed In.
             }
 
-            References = ReferencesRepository.GetAll().ToList();
+            References = await ReferencesRepository.GetAllAsync(HttpContext.RequestAborted);
 
             return Page();
         }
