@@ -230,6 +230,11 @@ namespace CentralSecurityServiceAdmin.Pages
 
             totalNumReferencesAdded += await AddReferenceAsync(OnlyAddIfUnique, ReferenceType.Url, "https://www.Payzone.ie/", "Thumbnail_Width_125-19-Payzone_Ireland-8300176baf159482.png", "Payzone Ireland.", "Lots of \"Bad\" CIA, MI5, \"Bad\" Freemasons and some MI6. But not all people.", redacted: false, cancellationToken);
 
+            totalNumReferencesAdded += await AddReferenceAsync(OnlyAddIfUnique, ReferenceType.Image, "20-Brian_Duffy-www.LinkedIn.com-2025_11_25-1620610440712.jpeg", thumbnailFileName: null, "Brian Duffy.", "\"Bad\" CIA, \"Bad\" Freemason, at least.", redacted: false, cancellationToken);
+            totalNumReferencesAdded += await AddReferenceAsync(OnlyAddIfUnique, ReferenceType.Image, "21-Niall_Duffy-www.LinkedIn.com-2025_11_25-1516254130287.jpeg", thumbnailFileName: null, "Niall Duffy.", "\"Bad\" CIA, MI6, \"Bad\" Freemason.", redacted: false, cancellationToken);
+            totalNumReferencesAdded += await AddReferenceAsync(OnlyAddIfUnique, ReferenceType.Image, "22-Sinead_Duffy_Skleres-www.Facebook.com-2025_11_25-481044838_9004068789715412_8486121078434754041_n.jpg", thumbnailFileName: null, "Sinead Duffy Skleres.", "\"Bad\" CIA, \"Bad\" Medical, \"Bad\" Freemason, at least.", redacted: false, cancellationToken);
+            totalNumReferencesAdded += await AddReferenceAsync(OnlyAddIfUnique, ReferenceType.Image, "23-Erin_Kelly_Duffy-www.LinkedIn.com-2025_11_25-1565799885387.jpeg", thumbnailFileName: null, "Erin Kelly Duffy.", "\"Bad\" CIA, \"Bad\" Freemason, at least.", redacted: false, cancellationToken);
+
             Message = $"{totalNumReferencesAdded} Reference(s) Added.";
         }
     }
