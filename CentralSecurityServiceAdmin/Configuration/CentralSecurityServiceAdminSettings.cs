@@ -20,6 +20,8 @@
 
         public class ReferencesSettings
         {
+            public string SourceReferenceFilesFolder { get; set; }
+
             public string DevelopmentReferenceFilesFolder { get; set; }
 
             public string ProductionReferenceFilesFolder { get; set; }

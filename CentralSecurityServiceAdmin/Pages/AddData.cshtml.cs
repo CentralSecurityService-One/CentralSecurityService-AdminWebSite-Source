@@ -104,6 +104,8 @@ namespace CentralSecurityServiceAdmin.Pages
 
             long uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
 
+            string sourceReferenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.SourceReferenceFilesFolder;
+
             string imageSourceFilePathAndName = null;
 
             string imageDestinationFilePathAndName = null;
@@ -129,8 +131,7 @@ namespace CentralSecurityServiceAdmin.Pages
             {
                 referenceFileName = $"{uniqueReferenceId:R000_000_000}_000-{sourceReferenceName}";
 
-                // TODO: Make path fully configurable or use a safer method to construct paths.
-                imageSourceFilePathAndName = Path.Combine(referenceFilesFolder, "Source", sourceReferenceName);
+                imageSourceFilePathAndName = Path.Combine(sourceReferenceFilesFolder, sourceReferenceName);
 
                 imageDestinationFilePathAndName = Path.Combine(referenceFilesFolder, referenceFileName);
 
@@ -139,7 +140,7 @@ namespace CentralSecurityServiceAdmin.Pages
 
             if (!string.IsNullOrWhiteSpace(thumbnailFileName))
             {
-                string thumbnailSourceFilePathAndName = Path.Combine(referenceFilesFolder, "Source", thumbnailFileName);
+                string thumbnailSourceFilePathAndName = Path.Combine(sourceReferenceFilesFolder, thumbnailFileName);
 
                 thumbnailDestinationFileName = $"{uniqueReferenceId:R000_000_000}_000-{thumbnailFileName}";
 
