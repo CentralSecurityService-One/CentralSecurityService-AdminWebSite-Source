@@ -10,9 +10,9 @@ namespace CentralSecurityServiceAdmin.Sessions
 {
     public class UserSession : IUserSession
     {
-        private const string SignedInTokenName = "RaptureTherapy.Identity.UserSession.SignedIn.Token";
+        private const string SignedInTokenName = "CentralSecurityService.Identity.UserSession.SignedIn.Token";
 
-        private const string SignedOutGuidName = "RaptureTherapy.Identity.UserSession.SignedOut.Guid";
+        private const string SignedOutGuidName = "CentralSecurityService.Identity.UserSession.SignedOut.Guid";
 
         public class RoleDetails : IUserSession.IRole
         {
