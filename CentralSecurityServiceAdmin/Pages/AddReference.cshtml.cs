@@ -43,7 +43,7 @@ namespace CentralSecurityServiceAdmin.Pages
         public string VideoUrl { get; set; }
 
         [BindProperty]
-        public string Url { get; set; }
+        public string ReferenceUrl { get; set; }
 
         public AddReferenceModel(ILogger<AddReferenceModel> logger, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IUserSession userSession, IEadentUserIdentity eadentUserIdentity, ICentralSecurityServiceDatabase centralSecurityServiceDatabase, IReferencesRepository referencesRepository)
             : base(logger, configuration, userSession, eadentUserIdentity)
@@ -273,14 +273,14 @@ namespace CentralSecurityServiceAdmin.Pages
                 referenceFilesFolder = CentralSecurityServiceAdminSettings.Instance.References.ProductionReferenceFilesFolder;
             }
 
-            if (string.IsNullOrWhiteSpace(Url))
+            if (string.IsNullOrWhiteSpace(ReferenceUrl))
             {
                 Logger.LogWarning("No Url was specified.");
                 return;
             }
             else
             {
-                referenceName = Url.Trim();
+                referenceName = ReferenceUrl.Trim();
             }
 
             long uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
