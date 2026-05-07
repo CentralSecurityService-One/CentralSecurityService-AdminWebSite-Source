@@ -70,9 +70,25 @@
                     </td>
                     <td>@reference.Description</td>
                     <td>@reference.Categorisations</td>
-                    <td>@if (reference.Redacted)
-                        {
-                            <text>Redacted.</text>
+                    <td>@{
+                            string additional = string.Empty;
+
+                            if (reference.Redacted)
+                            {
+                                additional += "Redacted.";
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(reference.Annotations))
+                            {
+                                if (additional.Length > 0)
+                                {
+                                    additional += " ";
+                                }
+
+                                additional += reference.Annotations;
+                            }
+
+                            <text>@additional</text>
                         }
                     </td>
                 </tr>
